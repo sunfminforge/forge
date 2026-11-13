@@ -1,0 +1,4 @@
+#!/bin/sh
+# Fixture tests of this detector: sh detectors/<name>/test
+here=$(cd "$(dirname "$0")" && pwd) || exit 1
+exec python3 -B "$here/tests.py" -v
