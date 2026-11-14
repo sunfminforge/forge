@@ -13,14 +13,14 @@ It reads `GUILD_FORGEJO_URL` and the token in `GUILD_FORGEJO_TOKEN` from the env
 From a checkout of guild/forge:
 
 ```sh
-cargo install --path tools/pr-get
+cargo install --path crates/pr-get
 ```
 
 ## Develop
 
 ```sh
-cargo test --manifest-path tools/pr-get/Cargo.toml   # offline: curl is a stand-in
-sh tools/pr-get/gate.sh                               # fmt, Flux, clippy -D warnings, tests
+cargo test -p pr-get        # offline: curl is a stand-in
+sh crates/pr-get/gate.sh    # fmt, Flux, clippy -D warnings, tests
 ```
 
 The gate's Flux part needs Homebrew's `sunfmin/tap/flux-toolchain`; `verify.sh` names the `brew` line when it is missing or old. Decisions are in `docs/decisions/`.

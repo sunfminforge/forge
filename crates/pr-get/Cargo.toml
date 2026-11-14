@@ -6,10 +6,6 @@ edition = "2024"
 license = "MIT"
 publish = false
 
-# Its own workspace: forge's root workspace is `crates/*`, and this crate is
-# built and tested on its own, `cargo test --manifest-path tools/pr-get/Cargo.toml`.
-[workspace]
-
 [dependencies]
 # The Flux commit that Homebrew's sunfmin/tap/flux-toolchain, the newest the
 # tap has, was built from: `brew info sunfmin/tap/flux-toolchain` names it.

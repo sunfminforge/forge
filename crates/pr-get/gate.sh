@@ -1,8 +1,9 @@
 #!/bin/sh
-# The gate of tools/pr-get: what must pass before it lands, run from
-# anywhere as `sh tools/pr-get/gate.sh`.
+# The gate of crates/pr-get: what must pass before it lands, run from
+# anywhere as `sh crates/pr-get/gate.sh`. forge's root gate.sh runs
+# `guild forge check .`; this one holds pr-get to the rest.
 #
-#   1. cargo fmt --check
+#   1. cargo fmt -p pr-get --check
 #   2. Flux, through ./verify.sh, on the crate: it must say
 #      `0 trusted; 0 ignored` (./flux-summary.sh reads it and prints it)
 #   3. cargo clippy -D warnings
@@ -10,13 +11,14 @@
 set -eu
 cd "$(dirname "$0")"
 
-# rustup's cargo, on the stable toolchain rust-toolchain.toml names. Flux's
+# rustup's cargo, on its default (stable) toolchain: a member crate's
+# rust-toolchain.toml would not reach a build run from forge's root. Flux's
 # attributes expand to nothing there; ./verify.sh checks them, with the tap's
 # Flux on the nightly it runs on.
 PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 export PATH
 
-cargo fmt --check
+cargo fmt -p pr-get --check
 
 # Flux runs first, alone. Its summary must say `0 trusted; 0 ignored`.
 FLUXFLAGS=""
@@ -30,7 +32,7 @@ grep -v '^{' "$flux_log" >&2 || true
 # shellcheck disable=SC2046
 ./flux-summary.sh "$flux_log" $(./verify.sh --list)
 
-cargo clippy --all-targets --quiet -- -D warnings
+cargo clippy -p pr-get --all-targets --quiet -- -D warnings
 
-cargo test --quiet
+cargo test -p pr-get --quiet
 echo "gate: green" >&2

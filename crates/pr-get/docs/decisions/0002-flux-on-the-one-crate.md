@@ -4,7 +4,7 @@ Status: accepted (guild/tasks#63)
 
 ## Context
 
-agent-cli puts decisions in pure crates checked by Flux and effects in one unchecked binary crate. guild/forge holds one crate per tool, and this task asks for one crate under tools/pr-get.
+agent-cli puts decisions in pure crates checked by Flux and effects in one unchecked binary crate. guild/forge holds one crate per tool, and this task asks for one crate under tools/pr-get (moved to crates/pr-get by guild/tasks#242: decision 3).
 
 Flux crashes on what clap's derive generates (an internal error in `update_from_arg_matches_mut` of `#[derive(Subcommand)]`), and refuses `serde_json::json!`, which unwraps inside.
 
