@@ -1,16 +1,5 @@
 name = "shared-failures"
 version = "0.1.0"
 purpose = "A detector of the trainer crew: finds one failure or send-back reason shared by the tasks of several roles, a gap in the level above them rather than a patch in each."
-usage = """
-shared-failures
-
-Reads Forgejo only (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN): the task issues of guild/tasks and
-their comments, read-only. Calls no model. The reasons it reads, each on a task whose role/<role>
-label names its role: a send-back's reason, a failure Guild saw the cause of, a failure the steward
-put back in the queue. Two reasons are the same when their words, less the tokens that only name
-the case (hashes, numbers, paths, quoted output), overlap at least half; a failure's cause only as
-the same cause. Prints only [[finding]]s (role, saw, evidence), one per role whose tasks share a
-reason with another role's, all with the same saw. Forgejo it cannot read is said on stderr, and it
-finds nothing. Tests: sh crates/shared-failures/test, or cargo test -p shared-failures at forge's root.
-"""
+usage = "shared-failures"
 roles = ["trainer"]
