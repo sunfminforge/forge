@@ -92,6 +92,10 @@ dependencies = [
 [[package]]
 name = "apply-edits"
 version = "0.1.0"
+dependencies = [
+ "memchr",
+ "tempfile",
+]
 
 [[package]]
 name = "autocfg"

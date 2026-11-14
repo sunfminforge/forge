@@ -218,22 +218,12 @@ pub fn parse_blocks(input: &[u8]) -> Result<Vec<Block>, String> {
 }
 
 /// Where each non-overlapping match of `needle` starts in `hay`, left to
-/// right.
+/// right: memchr's memmem, byte for byte. An empty needle matches nowhere.
 pub fn find_all(hay: &[u8], needle: &[u8]) -> Vec<usize> {
-    let mut at = Vec::new();
-    if needle.is_empty() || needle.len() > hay.len() {
-        return at;
+    if needle.is_empty() {
+        return Vec::new();
     }
-    let mut i = 0;
-    while i + needle.len() <= hay.len() {
-        if &hay[i..i + needle.len()] == needle {
-            at.push(i);
-            i += needle.len();
-        } else {
-            i += 1;
-        }
-    }
-    at
+    memchr::memmem::find_iter(hay, needle).collect()
 }
 
 /// The line, counted from 1, that byte `pos` of `text` is on.
@@ -690,6 +680,14 @@ mod tests {
         assert_eq!(text, b"a\nB1\nX\nd\n");
         assert_eq!(blocks[0].ranges, vec![(2, 7)]);
         assert_eq!(blocks[1].ranges, vec![(5, 7)]);
+    }
+
+    #[test]
+    fn matches_are_non_overlapping_and_an_empty_search_finds_none() {
+        assert_eq!(find_all(b"aaaaa", b"aa"), vec![0, 2]);
+        assert_eq!(find_all(b"x\ny\nx\n", b"x\n"), vec![0, 4]);
+        assert_eq!(find_all(b"abc", b""), Vec::<usize>::new());
+        assert_eq!(find_all(b"ab", b"abc"), Vec::<usize>::new());
     }
 
     #[test]

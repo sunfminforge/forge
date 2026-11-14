@@ -1,6 +1,6 @@
 //! What apply-edits does to the world: reads its arguments, the blocks on
 //! stdin and the file, asks lib what the blocks do, and when every block
-//! applied writes the file once (a temp file beside it, renamed over it,
+//! applied writes the file once (a tempfile beside it, persisted over it,
 //! so a kill leaves the old file or the new, never half of one) and
 //! prints the regions.
 
@@ -19,26 +19,22 @@ fn fail(msg: &str) -> ExitCode {
     ExitCode::from(EXIT_FAILED)
 }
 
-/// Writes `bytes` over `path` at once, keeping its permissions.
+/// Writes `bytes` over `path` at once, keeping its permissions: a
+/// tempfile beside it, persisted (renamed) over it; the temp file is
+/// removed on any failure.
 fn write_over(path: &Path, bytes: &[u8]) -> io::Result<()> {
     let dir = match path.parent() {
         Some(d) if !d.as_os_str().is_empty() => d,
         _ => Path::new("."),
     };
-    let name = path
-        .file_name()
-        .map(|n| n.to_string_lossy().into_owned())
-        .unwrap_or_default();
-    let tmp = dir.join(format!(".{name}.apply-edits.{}", std::process::id()));
-    let res = (|| {
-        fs::write(&tmp, bytes)?;
-        fs::set_permissions(&tmp, fs::metadata(path)?.permissions())?;
-        fs::rename(&tmp, path)
-    })();
-    if res.is_err() {
-        let _ = fs::remove_file(&tmp);
-    }
-    res
+    let mut tmp = tempfile::Builder::new()
+        .prefix(".apply-edits.")
+        .tempfile_in(dir)?;
+    tmp.write_all(bytes)?;
+    tmp.as_file().sync_all()?;
+    fs::set_permissions(tmp.path(), fs::metadata(path)?.permissions())?;
+    tmp.persist(path).map_err(|e| e.error)?;
+    Ok(())
 }
 
 fn run(file: &str, dry_run: bool) -> ExitCode {
