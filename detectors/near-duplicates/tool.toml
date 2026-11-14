@@ -1,0 +1,15 @@
+name = "near-duplicates"
+version = "0.1.0"
+purpose = "A detector of the trainer crew: finds entries of the roles' memory (core.md and skills/) that say nearly the same, within a role or across roles."
+usage = """
+run
+
+Reads lore's main through Forgejo (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN; GUILD_LORE_REPO,
+default guild/lore). Calls no model. An entry is a list item or a paragraph of at least 8
+content words; example blocks are none. Two are alike when they share 60% of their words, read
+75% the same word for word, or the longer says again 90% of a shorter one of 10 words or more.
+Prints only [[finding]]s (role, saw, evidence), one per group of alike entries: within a role,
+merge them; across roles, lift what they share to the level above. Without a token, lore is
+unread and it prints nothing. Tests: sh detectors/near-duplicates/test.
+"""
+roles = ["trainer"]
