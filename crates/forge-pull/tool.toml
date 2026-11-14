@@ -1,0 +1,5 @@
+name = "forge-pull"
+version = "0.1.0"
+purpose = "Opens a pull request on Guild's Forgejo with the instance's own account (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN) and prints its repo#number and URL, or finds every pull of the task's organization whose body says 'Closes <owner/repo>#<n>' and prints, per pull, its repo#number, state, head branch, head sha and review state, instead of curl and a hand-built JSON body."
+usage = "forge-pull open <owner/repo> --head <branch> [--base main] --title <t> --body-file <f> [--dry-run] | forge-pull find <owner/repo>#<n>"
+roles = ["foreman", "rust-cli-coder", "rust-web-coder", "steward", "trainer", "warden"]
