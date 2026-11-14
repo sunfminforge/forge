@@ -1,0 +1,6 @@
+[package]
+name = "specific-entries"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "A detector of the trainer crew; its detector is detector.py, embedded and run by python3."
