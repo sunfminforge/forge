@@ -1,0 +1,5 @@
+name = "review-approve"
+version = "0.1.0"
+purpose = "The warden's passing review of a task and the approval of its pull requests in one command: guild task review <task> --pass, then guild pull approve for each pull in order, stopping at the first step that fails and never approving a pull whose review did not pass."
+usage = "review-approve pass <task> --evidence <text> --pull <repo>#<number> [--pull <repo>#<number>]... [--dry-run]"
+roles = ["warden"]
