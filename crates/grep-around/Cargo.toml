@@ -1,0 +1,15 @@
+[package]
+name = "grep-around"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Searches paths recursively (honouring .gitignore, skipping target/ and binary files) and prints each match's region with line numbers, overlapping regions merged, per file under a header; or prints one file's line range with line numbers."
+
+[dependencies]
+# ripgrep's library crates, as its `grep` facade re-exports them minus its
+# printer: the matcher interface, the regex matcher and the line searcher;
+# and its directory walker that honours .gitignore and globs (ignore).
+grep-matcher = "=0.1.9"
+grep-regex = "=0.1.14"
+grep-searcher = "=0.1.17"
+ignore = "=0.4.34"
