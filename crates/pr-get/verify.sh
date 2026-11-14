@@ -46,13 +46,13 @@ fi
 # The tap's cargo-flux comes first, so no cargo-flux, fixpoint or z3 an older
 # install left in ~/.cargo/bin is the one run: it puts its own fixpoint and z3
 # first. cargo-flux re-invokes `cargo +<its nightly>`, which only rustup's
-# cargo understands; rustup starts from rust-toolchain.toml's.
+# cargo understands; rustup starts from its default toolchain.
 PATH="$("$brew" --prefix "$formula")/bin:$HOME/.cargo/bin:$PATH"
 export PATH
 # A solver query of one function past twenty seconds is an error naming it,
 # Flux checks on past an error so one run names every slow function, and it
 # times each, the file of timings kept out of the tree.
-FLUXFLAGS="-Ftimings -Ffixpoint-timeout=20 -Fcatch-bugs -Flog-dir=$PWD/target/flux-log${FLUXFLAGS:+ $FLUXFLAGS}"
+FLUXFLAGS="-Ftimings -Ffixpoint-timeout=20 -Fcatch-bugs -Flog-dir=$PWD/../../target/flux-log${FLUXFLAGS:+ $FLUXFLAGS}"
 export FLUXFLAGS
 case "${1:-}" in
 "" | -* | check) ;;
@@ -65,5 +65,5 @@ if [ -z "$crates" ]; then
 fi
 for manifest in $crates; do
     echo "verify: checking $(dirname "$manifest")"
-    cargo flux "$@" --manifest-path "$manifest"
+    cargo flux "$@" -p pr-get --manifest-path "$manifest"
 done

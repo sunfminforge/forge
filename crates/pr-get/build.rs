@@ -9,7 +9,7 @@ use std::path::Path;
 use std::process::Command;
 
 /// Where this package is in the checkout it is built from.
-const PACKAGE: &str = "tools/pr-get/";
+const PACKAGE: &str = "crates/pr-get/";
 
 fn main() {
     let release = env!("CARGO_PKG_VERSION");
@@ -72,7 +72,7 @@ fn git(args: &[&str]) -> Option<String> {
         .then(|| String::from_utf8_lossy(&out.stdout).trim().to_string())
 }
 
-/// Whether the git around this build is forge's own checkout, at tools/pr-get, and not
+/// Whether the git around this build is forge's own checkout, at crates/pr-get, and not
 /// a repo a tarball of it was unpacked inside.
 fn checkout() -> bool {
     git(&["rev-parse", "--show-prefix"]).is_some_and(|prefix| prefix == PACKAGE)
