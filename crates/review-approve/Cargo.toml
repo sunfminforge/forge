@@ -1,0 +1,28 @@
+[package]
+name = "review-approve"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "The warden's review of a task and the approval of its pulls in one command: guild task review --pass, then guild pull approve for each pull, stopping at the first that fails."
+
+[dependencies]
+# The revision of agent-help that skills/agent-cli adopts.
+agent-help = { git = "https://github.com/sunfmin/agent-cli.git", rev = "f506df826a97b2fd834e1d65b9057001a6a6e796" }
+clap = { version = "4.5", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+proptest = "1"
+
+# The guild the tests run in place of the real one: target/<profile>/examples/guild.
+[[example]]
+name = "guild"
+path = "tests/fake/guild.rs"
+
+# ./verify.sh checks the pure modules, plan and refusal, with Flux.
+[package.metadata.flux]
+enabled = true
+check-overflow = "strict"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(flux)'] }
