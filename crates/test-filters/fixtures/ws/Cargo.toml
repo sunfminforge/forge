@@ -1,0 +1,5 @@
+# A workspace test-filters' tests run it on: its own root, not a member of
+# forge's workspace, so forge's own runs never build it.
+[workspace]
+resolver = "2"
+members = ["sample"]
