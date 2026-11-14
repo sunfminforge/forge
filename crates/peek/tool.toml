@@ -1,0 +1,5 @@
+name = "peek"
+version = "0.1.0"
+purpose = "Does cat, ls and cat in one call: given any mix of files and directories, prints per path, in the order named, a '== <path>' header, then a file's lines numbered ('<line>: <text>'), or a directory's entries one per line, sorted, each directory with a trailing '/'. A binary file prints '(binary, N bytes)'; a missing or unreadable path prints an 'error: ' line under its header while the others still print. Exits 0 when every path was read, 2 when any was not. Line ranges are grep-around's (<file>:<from>-<to>). Read-only."
+usage = "peek <path>…"
+roles = ["foreman", "rust-cli-coder", "trainer", "warden"]
