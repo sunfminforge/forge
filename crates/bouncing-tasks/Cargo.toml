@@ -1,0 +1,9 @@
+[package]
+name = "bouncing-tasks"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "A detector of the trainer crew; its detector is detect.py, embedded and run by python3."
+
+# A crate of its own: built and released by itself from crates/bouncing-tasks.
+[workspace]
