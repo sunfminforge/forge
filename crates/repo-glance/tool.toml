@@ -1,0 +1,5 @@
+name = "repo-glance"
+version = "0.1.0"
+purpose = "Orients in a worktree in one call instead of git status, git log and cat: prints under a '== git' header the current repo's branch with its upstream and ahead/behind, git status --short, and the last 5 commits one line each ('<hash> <subject>'), then each named path as peek prints it (a '== <path>' header, a file's lines numbered, a directory's entries listed). Outside a git repo it says so under '== git' and still prints the paths. Exits 0 when the git state and every path were read, 2 when any was not. Read-only: it never changes the worktree or the index."
+usage = "repo-glance [path…]"
+roles = ["rust-cli-coder", "trainer"]

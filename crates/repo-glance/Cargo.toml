@@ -1,0 +1,9 @@
+[package]
+name = "repo-glance"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Prints the current repo's git state (branch and upstream ahead/behind, git status --short, the last 5 commits) under '== git', then each named path as peek prints it, in one call instead of git status, git log and cat."
+
+[dependencies]
+peek = { path = "../peek" }
