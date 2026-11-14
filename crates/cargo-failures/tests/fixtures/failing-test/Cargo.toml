@@ -1,0 +1,8 @@
+[package]
+name = "fixture-failing-test"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Its own workspace, not a member of forge's.
+[workspace]

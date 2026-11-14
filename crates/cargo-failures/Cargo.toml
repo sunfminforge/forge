@@ -1,0 +1,9 @@
+[package]
+name = "cargo-failures"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Runs cargo build or test once and prints only the compile errors, the failing tests with their panic messages, and every 'test result:' line, exiting with cargo's own exit code."
+
+[dependencies]
+serde_json = "1"
