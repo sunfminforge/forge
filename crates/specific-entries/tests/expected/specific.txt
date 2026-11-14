@@ -1,0 +1,4 @@
+[[finding]]
+role = "narrow"
+saw = "5 entries name a specific repo, path or issue: a role holds how it does its kind of work, true beyond the case it came from; the case belongs to its home"
+evidence = "lore guild/lore@main:\nnarrow/skills/hand-in.md:3 names the path `./verify.sh`\nnarrow/skills/hand-in.md:4 names the issue `sunfmin/control#722`\nnarrow/skills/hand-in.md:5 names the URL `https://example.com/guide`\nnarrow/skills/hand-in.md:6 names the issue `#41`\nnarrow/skills/hand-in.md:6 names the repo `acme/tap`\nnarrow/skills/hand-in.md:10 names the path `src/config/rustfmt.toml`"

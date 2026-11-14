@@ -1,0 +1,31 @@
+[[finding]]
+role = "rust-cli-coder"
+saw = "the same send-back reason came back in the tasks of several roles (rust-cli-coder, trainer): gate: its check says run `./gate.sh` and it must exit 0. I ran it in a clean worktree at head 3dd6f72: it exited 126, permission denied: the script is not exec…"
+evidence = [
+  "guild/tasks#10 (rust-cli-coder, send-back at 2026-11-01T10:00:00+09:00): gate: its check says run `./gate.sh` and it must exit 0. I ran it in a clean worktree at head 3dd6f72: it exited 126, permission denied: the script is not executable as committed.",
+  "guild/tasks#11 (trainer, send-back at 2026-11-02T10:00:00+09:00): check: its check says run `./check.sh` and it must exit 0. I ran it in a clean worktree at head 9a1b2c4: it exited 126, permission denied: the script is not executable as committed.",
+]
+
+[[finding]]
+role = "trainer"
+saw = "the same send-back reason came back in the tasks of several roles (rust-cli-coder, trainer): gate: its check says run `./gate.sh` and it must exit 0. I ran it in a clean worktree at head 3dd6f72: it exited 126, permission denied: the script is not exec…"
+evidence = [
+  "guild/tasks#10 (rust-cli-coder, send-back at 2026-11-01T10:00:00+09:00): gate: its check says run `./gate.sh` and it must exit 0. I ran it in a clean worktree at head 3dd6f72: it exited 126, permission denied: the script is not executable as committed.",
+  "guild/tasks#11 (trainer, send-back at 2026-11-02T10:00:00+09:00): check: its check says run `./check.sh` and it must exit 0. I ran it in a clean worktree at head 9a1b2c4: it exited 126, permission denied: the script is not executable as committed.",
+]
+
+[[finding]]
+role = "rust-cli-coder"
+saw = "the same failure reason came back in the tasks of several roles (rust-cli-coder, trainer): cause=start"
+evidence = [
+  "guild/tasks#12 (rust-cli-coder, failure at 2026-11-04T10:00:00+09:00): cause=start",
+  "guild/tasks#13 (trainer, failure at 2026-11-05T10:00:00+09:00): cause=start",
+]
+
+[[finding]]
+role = "trainer"
+saw = "the same failure reason came back in the tasks of several roles (rust-cli-coder, trainer): cause=start"
+evidence = [
+  "guild/tasks#12 (rust-cli-coder, failure at 2026-11-04T10:00:00+09:00): cause=start",
+  "guild/tasks#13 (trainer, failure at 2026-11-05T10:00:00+09:00): cause=start",
+]

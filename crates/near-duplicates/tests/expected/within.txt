@@ -1,0 +1,4 @@
+[[finding]]
+role = "reviewer"
+saw = "2 entries say nearly the same within the role: merge them into one"
+evidence = "lore guild/lore@main:\nreviewer/core.md:5: \"- Run the tests and the acceptance commands yourself before you read the change or its description.\"\nreviewer/skills/review.md:3: \"- Before reading the change or its description, run the acceptance commands and the tests yourself.\"\nalike (shared words, word order, or the shorter said again in the longer): 0.78 between core.md:5 and skills/review.md:3"

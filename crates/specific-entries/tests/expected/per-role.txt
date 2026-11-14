@@ -1,0 +1,9 @@
+[[finding]]
+role = "a"
+saw = "5 entries name a specific repo, path or issue: a role holds how it does its kind of work, true beyond the case it came from; the case belongs to its home"
+evidence = "lore guild/lore@main:\na/core.md:3 names the path `./verify.sh`\na/core.md:4 names the issue `sunfmin/control#722`\na/core.md:5 names the URL `https://example.com/guide`\na/core.md:6 names the issue `#41`\na/core.md:6 names the repo `acme/tap`\na/core.md:10 names the path `src/config/rustfmt.toml`"
+
+[[finding]]
+role = "b"
+saw = "5 entries name a specific repo, path or issue: a role holds how it does its kind of work, true beyond the case it came from; the case belongs to its home"
+evidence = "lore guild/lore@main:\nb/skills/x.md:3 names the path `./verify.sh`\nb/skills/x.md:4 names the issue `sunfmin/control#722`\nb/skills/x.md:5 names the URL `https://example.com/guide`\nb/skills/x.md:6 names the issue `#41`\nb/skills/x.md:6 names the repo `acme/tap`\nb/skills/x.md:10 names the path `src/config/rustfmt.toml`"

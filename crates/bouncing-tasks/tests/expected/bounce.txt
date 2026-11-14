@@ -1,0 +1,34 @@
+[[finding]]
+role = "rust-cli-coder"
+saw = "a piece of work passed between narrow roles (rust-cli-coder, web-coder), task after task, before it landed"
+evidence = [
+  "goal guild/tasks#40, repo shop: #41 rust-cli-coder -> #42 web-coder -> #43 rust-cli-coder; 2 hand-offs, then it landed",
+]
+
+[[finding]]
+role = "web-coder"
+saw = "a piece of work passed between narrow roles (rust-cli-coder, web-coder), task after task, before it landed"
+evidence = [
+  "goal guild/tasks#40, repo shop: #41 rust-cli-coder -> #42 web-coder -> #43 rust-cli-coder; 2 hand-offs, then it landed",
+]
+
+[[finding]]
+role = "handler-writer"
+saw = "a piece of work passed between narrow roles (handler-writer, schema-writer, test-writer), task after task, before it landed"
+evidence = [
+  "goal guild/tasks#80, repo api: #81 schema-writer -> #82 handler-writer -> #83 test-writer; 2 hand-offs, not landed yet",
+]
+
+[[finding]]
+role = "schema-writer"
+saw = "a piece of work passed between narrow roles (handler-writer, schema-writer, test-writer), task after task, before it landed"
+evidence = [
+  "goal guild/tasks#80, repo api: #81 schema-writer -> #82 handler-writer -> #83 test-writer; 2 hand-offs, not landed yet",
+]
+
+[[finding]]
+role = "test-writer"
+saw = "a piece of work passed between narrow roles (handler-writer, schema-writer, test-writer), task after task, before it landed"
+evidence = [
+  "goal guild/tasks#80, repo api: #81 schema-writer -> #82 handler-writer -> #83 test-writer; 2 hand-offs, not landed yet",
+]

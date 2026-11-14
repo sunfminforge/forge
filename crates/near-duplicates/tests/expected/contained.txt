@@ -1,0 +1,4 @@
+[[finding]]
+role = "cli"
+saw = "2 entries say nearly the same within the role: merge them into one"
+evidence = "lore guild/lore@main:\ncli/core.md:3: \"- Every command prints exactly one JSON object on stdout, warnings go to stderr, and a failure exits non-zero naming each fault with its field and its fix.\"\ncli/skills/shape.md:3: \"- Every command prints exactly one JSON object on stdout; warnings go to stderr, a failure exits non-zero.\"\nalike (shared words, word order, or the shorter said again in the longer): 0.76 between core.md:3 and skills/shape.md:3"

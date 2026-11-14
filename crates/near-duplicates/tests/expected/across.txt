@@ -1,0 +1,4 @@
+[[finding]]
+role = "alpha"
+saw = "3 entries say nearly the same across the roles alpha, beta, gamma: lift what they share into one place, a shared skill or the level above, instead of each role keeping its own copy"
+evidence = "lore guild/lore@main:\nalpha/core.md:3: \"- Never approve your own work, and never land a pull request: the warden does.\"\nbeta/core.md:3: \"- You never land a pull request and never approve your own work; that is the warden's.\"\ngamma/skills/x.md:3: \"- Never approve your own work, and never land a pull request: the warden does.\"\nalike (shared words, word order, or the shorter said again in the longer): 1.00 between alpha/core.md:3 and beta/core.md:3; 1.00 between alpha/core.md:3 and gamma/skills/x.md:3; 1.00 between beta/core.md:3 and gamma/skills/x.md:3"
