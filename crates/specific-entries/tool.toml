@@ -10,6 +10,6 @@ with each entry's file:line and what it names: a URL; an issue (owner/repo#n, #n
 ./ or ~/, with an extension, or three segments deep); an owner/repo in code. Not findings: the
 role's own skills/<name>.md, Guild's own repos (guild/tasks, guild/lore, guild/forge), and
 placeholders (<repo>, {name}, *, $VAR). Without a token, lore is unread and it prints nothing.
-Tests: sh crates/specific-entries/test, or cargo test there.
+Tests: sh crates/specific-entries/test, or cargo test -p specific-entries at forge's root.
 """
 roles = ["trainer"]

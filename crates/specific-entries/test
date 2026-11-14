@@ -4,7 +4,7 @@
 here=$(cd "$(dirname "$0")" && pwd) || exit 1
 if [ -z "${DETECTOR:-}" ]; then
     cargo build --quiet --manifest-path "$here/Cargo.toml" || exit 1
-    DETECTOR="${CARGO_TARGET_DIR:-$here/target}/debug/specific-entries"
+    DETECTOR="${CARGO_TARGET_DIR:-$here/../../target}/debug/specific-entries"
 fi
 export DETECTOR
 exec python3 -B "$here/tests.py" -v

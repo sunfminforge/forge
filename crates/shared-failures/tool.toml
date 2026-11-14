@@ -11,6 +11,6 @@ put back in the queue. Two reasons are the same when their words, less the token
 the case (hashes, numbers, paths, quoted output), overlap at least half; a failure's cause only as
 the same cause. Prints only [[finding]]s (role, saw, evidence), one per role whose tasks share a
 reason with another role's, all with the same saw. Forgejo it cannot read is said on stderr, and it
-finds nothing. Tests: sh crates/shared-failures/test, or cargo test there.
+finds nothing. Tests: sh crates/shared-failures/test, or cargo test -p shared-failures at forge's root.
 """
 roles = ["trainer"]

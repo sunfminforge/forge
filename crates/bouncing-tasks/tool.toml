@@ -10,6 +10,6 @@ goal's tasks on one repo in the order they were queued, up to and including the 
 it bounces when its tasks change role at least twice among at least two roles. Prints only
 [[finding]]s (role, saw, evidence), one per role the work passed through, all with the same saw.
 With no L3 to read it says so on stderr and finds nothing. Tests: sh crates/bouncing-tasks/test,
-or cargo test there.
+or cargo test -p bouncing-tasks at forge's root.
 """
 roles = ["trainer"]

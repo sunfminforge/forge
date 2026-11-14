@@ -11,6 +11,6 @@ than B bytes (1024) for each task it settled in the last N days (14). Growth is 
 main's first parents, from the window's opening or from when the role came into lore within it,
 so a new role's first draft is no growth. The foreman settles no task of its own: it is credited
 with every settled task that belongs to a goal. Without a token, lore is unread and it prints
-nothing. Tests: sh crates/memory-growth/test, or cargo test there.
+nothing. Tests: sh crates/memory-growth/test, or cargo test -p memory-growth at forge's root.
 """
 roles = ["trainer"]

@@ -10,6 +10,6 @@ content words; example blocks are none. Two are alike when they share 60% of the
 75% the same word for word, or the longer says again 90% of a shorter one of 10 words or more.
 Prints only [[finding]]s (role, saw, evidence), one per group of alike entries: within a role,
 merge them; across roles, lift what they share to the level above. Without a token, lore is
-unread and it prints nothing. Tests: sh crates/near-duplicates/test, or cargo test there.
+unread and it prints nothing. Tests: sh crates/near-duplicates/test, or cargo test -p near-duplicates at forge's root.
 """
 roles = ["trainer"]
