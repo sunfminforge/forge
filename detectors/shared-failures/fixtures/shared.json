@@ -1,0 +1,23 @@
+{
+  "issues": [
+    {"number": 10, "labels": [{"name": "task"}, {"name": "role/rust-cli-coder"}]},
+    {"number": 11, "labels": [{"name": "task"}, {"name": "role/trainer"}]},
+    {"number": 12, "labels": [{"name": "task"}, {"name": "role/rust-cli-coder"}]},
+    {"number": 13, "labels": [{"name": "task"}, {"name": "role/trainer"}]},
+    {"number": 14, "labels": [{"name": "task"}, {"name": "role/web-coder"}]},
+    {"number": 15, "labels": [{"name": "task"}, {"name": "role/web-coder"}]},
+    {"number": 16, "labels": [{"name": "goal"}]},
+    {"number": 17, "labels": [{"name": "role/web-coder"}], "pull_request": {"merged": false}}
+  ],
+  "comments": [
+    {"id": 1, "issue": 10, "created_at": "2026-11-01T10:00:00+09:00", "body": "<!--guild:sent-back comment=900-->\nSent back by review 1 (claude-code) on `gate`:\n\n> gate: its check says run `./gate.sh` and it must exit 0. I ran it in a clean worktree at head 3dd6f72:\n> it exited 126, permission denied: the script is not executable as committed.\n\nguild/tasks#10 goes back to its worker."},
+    {"id": 2, "issue": 11, "created_at": "2026-11-02T10:00:00+09:00", "body": "<!--guild:sent-back comment=901-->\nSent back by review 1 (claude-code) on `check`:\n\n> check: its check says run `./check.sh` and it must exit 0. I ran it in a clean worktree at head 9a1b2c4:\n> it exited 126, permission denied: the script is not executable as committed.\n\nguild/tasks#11 goes back to its worker."},
+    {"id": 3, "issue": 14, "created_at": "2026-11-03T10:00:00+09:00", "body": "<!--guild:sent-back comment=902-->\nSent back by review 1 (claude-code) on `readme`:\n\n> readme: the README names no command that starts the server, nor the port it listens on.\n"},
+    {"id": 4, "issue": 15, "created_at": "2026-11-03T11:00:00+09:00", "body": "<!--guild:failed cause=stopped at=1794600000-->\nguild/tasks#15 failed: a person hard-stopped its instance."},
+    {"id": 5, "issue": 16, "created_at": "2026-11-03T12:00:00+09:00", "body": "<!--guild:failed cause=start at=1794600001-->\nNot a task of a role: no label."},
+    {"id": 6, "issue": 17, "created_at": "2026-11-03T13:00:00+09:00", "body": "<!--guild:failed cause=start at=1794600002-->\nA pull request, not a task."},
+    {"filler": 55},
+    {"id": 7, "issue": 12, "created_at": "2026-11-04T10:00:00+09:00", "body": "<!--guild:failed cause=start at=1794601000-->\nguild/tasks#12 failed: its instance did not start."},
+    {"id": 8, "issue": 13, "created_at": "2026-11-05T10:00:00+09:00", "body": "<!--guild:failed cause=start at=1794602000-->\nguild/tasks#13 failed: its instance did not start."}
+  ]
+}

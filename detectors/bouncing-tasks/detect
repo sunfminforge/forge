@@ -1,0 +1,16 @@
+#!/bin/sh
+# The detector: runs detect.py beside it with the developer directory's
+# python3 itself, by its framework path: called as /usr/bin/python3 or
+# <developer dir>/usr/bin/python3 it writes an xcrun cache outside the
+# detector's sandbox, and the run is stopped. -I: nothing of the environment;
+# -B: no bytecode written.
+here=$(cd "$(dirname "$0")" && pwd) || exit 1
+dev=$(readlink /var/db/xcode_select_link 2>/dev/null)
+fw=Library/Frameworks/Python3.framework/Versions/Current/bin/python3
+for py in ${GUILD_PYTHON3:-} "$dev/$fw" \
+    "/Library/Developer/CommandLineTools/$fw" \
+    "/Applications/Xcode.app/Contents/Developer/$fw"; do
+    [ -n "$py" ] && [ -x "$py" ] && exec "$py" -I -B "$here/detect.py" "$@"
+done
+echo "$(basename "$here"): no python3 of a developer directory found" >&2
+exit 1
