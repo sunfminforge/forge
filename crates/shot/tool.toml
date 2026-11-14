@@ -1,0 +1,5 @@
+name = "shot"
+version = "0.1.0"
+purpose = "Screenshots a web page or local HTML file in headless Chrome with the viewport emulated at a given width (no window clamp) and prefers-color-scheme emulated dark or light, saves a full-page PNG, and prints its path, the width, the page's document scrollWidth and overflow: yes|no, so horizontal overflow shows."
+usage = "shot <url|file> --width <px> [--dark|--light] [--out <png>]"
+roles = ["rust-web-coder", "ui-tester"]

@@ -1,0 +1,12 @@
+[package]
+name = "shot"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Screenshots a page in headless Chrome at an emulated viewport width and colour scheme, full page, and prints its scrollWidth beside the width so horizontal overflow shows."
+
+[dependencies]
+serde_json = "1"
+
+[dev-dependencies]
+png = "=0.18.1"
