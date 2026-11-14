@@ -1,0 +1,8 @@
+[package]
+name = "peek"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Prints each named path under a '== <path>' header: a file's lines numbered, a directory's entries one per line with '/' after each directory, in the order named, in one call instead of cat, ls and cat."
+
+[dependencies]
