@@ -1,0 +1,5 @@
+name = "read-files"
+version = "0.1.0"
+purpose = "Prints each named file whole, or only the line range <start>-<end> of it, under a '==> <path>[:<start>-<end>] <==' header line, each line with its line number, in one call instead of cat, cat and sed -n 'a,bp'; a missing file or a range past the end is said on stderr while the others still print, and it exits 1 when any argument failed. Read-only."
+usage = "read-files <path>[:<start>-<end>] …"
+roles = ["foreman", "rust-cli-coder", "rust-web-coder", "trainer", "ui-tester"]
