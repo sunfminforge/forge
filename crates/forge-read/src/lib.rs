@@ -22,21 +22,24 @@ pub const EXIT_USAGE: u8 = 2;
 /// Exit code of a read that failed: the environment, Forgejo, or not found.
 pub const EXIT_FAIL: u8 = 1;
 
-pub const USAGE: &str = "usage: forge-read issue <owner/repo> <n> [--comments]\n       forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all]";
+pub const USAGE: &str = "usage: forge-read issue <owner/repo> <n> [--comments]\n       forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all] [--head <branch>]";
 
 /// What `--help` answers.
 pub const HELP: &str = concat!(
     "usage: forge-read issue <owner/repo> <n> [--comments]\n",
-    "       forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all]\n",
+    "       forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all] [--head <branch>]\n",
     "       forge-read --version\n\n",
     "Reads Guild's Forgejo in one call, read-only (GET only), and prints plain text, never JSON. It signs in as the instance's own account: GUILD_FORGEJO_URL and GUILD_FORGEJO_TOKEN from the environment, which a Guild instance is given; the caller never fetches or handles a token, and forge-read never prints it.\n\n",
     "commands:\n",
     "  issue <owner/repo> <n>    one issue (or pull, read as an issue): its number, title, state, labels, author, time and body\n",
     "    --comments              then every comment, oldest first, each with its author and time; every page is read, not only the first\n",
     "  list <owner/repo> issues|pulls\n",
-    "                            one line per item, newest first: #<number> <state> [<labels>] <title>\n",
+    "                            one line per item, newest first; issues as #<number> <state> [<labels>] <title>,\n",
+    "                            pulls as #<number> <state> <head branch> -> <base branch> <head sha, 12 chars> [<labels>] <title>\n",
     "    --label <name>          only items carrying this label; give it again to require each of several\n",
-    "    --state open|closed|all which items by state (open); a merged pull's state is printed merged\n\n",
+    "    --state open|closed|all which items by state (open); a merged pull's state is printed merged, and is closed to --state\n",
+    "    --head <branch>         pulls only: only pulls whose head branch is this one, as in guild/tasks-226; given once\n\n",
+    "list issues reads Forgejo's issue search; list pulls reads the repo's pulls (GET /repos/<owner>/<repo>/pulls), every page of either.\n\n",
     "issue prints, each on its own line: number: <n>, title: <title>, state: <state>, labels: <a, b>, author: <login>, created: <time>, then a blank line and the body as written. With --comments: a blank line, comments: <count>, and for each comment a blank line, --- comment <i> of <count> by <login> at <time>, and its body.\n\n",
     "Exits 0 with the answer on stdout. Exits 1 with the cause and its fix on stderr when GUILD_FORGEJO_URL or GUILD_FORGEJO_TOKEN is unset, Forgejo refuses the token or cannot be reached, or the repo or issue is not found; exits 2 with the usage on stderr on an argument it does not take.\n",
 );
@@ -120,6 +123,8 @@ pub enum Asked {
         kind: Kind,
         labels: Vec<String>,
         state: State,
+        /// Pulls only: the one head branch to keep.
+        head: Option<String>,
     },
 }
 
@@ -183,6 +188,7 @@ fn parse_list(args: &[String]) -> Result<Asked, String> {
     let mut positional = Vec::new();
     let mut labels = Vec::new();
     let mut state = None;
+    let mut head = None;
     let mut it = args.iter();
     while let Some(a) = it.next() {
         let (name, inline) = match a.split_once('=') {
@@ -190,13 +196,18 @@ fn parse_list(args: &[String]) -> Result<Asked, String> {
             _ => (a.as_str(), None),
         };
         match name {
-            "--label" | "--state" => {
+            "--label" | "--state" | "--head" => {
                 let value = match inline.or_else(|| it.next().cloned()) {
                     Some(v) if !v.is_empty() => v,
                     _ => return Err(format!("{name} takes a value")),
                 };
                 if name == "--label" {
                     labels.push(value);
+                } else if name == "--head" {
+                    if head.is_some() {
+                        return Err("--head is given once: one head branch".into());
+                    }
+                    head = Some(value);
                 } else {
                     if state.is_some() {
                         return Err("--state is given once".into());
@@ -223,11 +234,15 @@ fn parse_list(args: &[String]) -> Result<Asked, String> {
     if let Some(extra) = positional.get(2) {
         return Err(format!("unrecognized argument: {extra}"));
     }
+    if head.is_some() && kind == Kind::Issues {
+        return Err("--head is for list pulls: an issue has no head branch".into());
+    }
     Ok(Asked::List {
         repo,
         kind,
         labels,
         state: state.unwrap_or(State::Open),
+        head,
     })
 }
 
@@ -267,11 +282,13 @@ fn label_names(issue: &Value) -> Vec<&str> {
         .unwrap_or_default()
 }
 
-/// An item's state: Forgejo's open or closed, and merged for a merged pull.
+/// An item's state: Forgejo's open or closed, and merged for a merged pull,
+/// whether read as an issue (`pull_request.merged`) or as a pull (`merged`).
 fn state(issue: &Value) -> &str {
     let merged = issue
         .get("pull_request")
         .and_then(|p| p.get("merged"))
+        .or_else(|| issue.get("merged"))
         .and_then(Value::as_bool)
         .unwrap_or(false);
     if merged {
@@ -350,6 +367,46 @@ pub fn render_line(issue: &Value) -> String {
     )
 }
 
+/// The number an item has on its repo.
+fn number(item: &Value) -> u64 {
+    item.get("number").and_then(Value::as_u64).unwrap_or(0)
+}
+
+/// Items newest first: Forgejo numbers them as they are made, so the
+/// highest number is the newest, whatever order the pages came in.
+pub fn newest_first(items: &mut [Value]) {
+    items.sort_by_key(|i| std::cmp::Reverse(number(i)));
+}
+
+/// A field of a pull's head or base, as `ref` or `sha`.
+fn side<'a>(pull: &'a Value, which: &str, key: &str) -> &'a str {
+    pull.get(which).map(|s| text(s, key)).unwrap_or("")
+}
+
+/// Whether a pull's head branch is `head`, or no head was asked.
+pub fn heads(pull: &Value, head: Option<&str>) -> bool {
+    head.is_none_or(|h| side(pull, "head", "ref") == h)
+}
+
+/// The length of a head sha as `list pulls` prints it.
+pub const SHA_LEN: usize = 12;
+
+/// One line of `list pulls`:
+/// `#<number> <state> <head> -> <base> <sha (12)> [<labels>] <title>`.
+pub fn render_pull_line(pull: &Value) -> String {
+    let labels: Vec<String> = label_names(pull).into_iter().map(one_line).collect();
+    let sha: String = side(pull, "head", "sha").chars().take(SHA_LEN).collect();
+    format!(
+        "#{} {} {} -> {} {sha} [{}] {}\n",
+        number(pull),
+        state(pull),
+        one_line(side(pull, "head", "ref")),
+        one_line(side(pull, "base", "ref")),
+        labels.join(","),
+        one_line(text(pull, "title"))
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -394,7 +451,8 @@ mod tests {
                 repo: Repo::parse("guild/tasks").unwrap(),
                 kind: Kind::Issues,
                 labels: vec!["a".into(), "b".into()],
-                state: State::All
+                state: State::All,
+                head: None
             })
         );
         let Ok(Asked::List { state, kind, .. }) = parse(&args(&["list", "g/f", "pulls"])) else {
@@ -406,6 +464,52 @@ mod tests {
         assert!(parse(&args(&["list", "g/f", "issues", "--label"])).is_err());
         assert!(parse(&args(&["nope"])).is_err());
         assert_eq!(parse(&args(&["list", "--help"])), Ok(Asked::Help));
+    }
+
+    #[test]
+    fn filters_parse_head_once_for_pulls() {
+        let Ok(Asked::List { head, .. }) =
+            parse(&args(&["list", "g/f", "pulls", "--head", "guild/tasks-1"]))
+        else {
+            panic!()
+        };
+        assert_eq!(head.as_deref(), Some("guild/tasks-1"));
+        let Ok(Asked::List { head, .. }) = parse(&args(&["list", "g/f", "pulls", "--head=b"]))
+        else {
+            panic!()
+        };
+        assert_eq!(head.as_deref(), Some("b"));
+        for bad in [
+            &["list", "g/f", "pulls", "--head", "a", "--head", "b"][..],
+            &["list", "g/f", "pulls", "--head"],
+            &["list", "g/f", "pulls", "--head="],
+            &["list", "g/f", "issues", "--head", "a"],
+        ] {
+            assert!(parse(&args(bad)).is_err(), "{bad:?}");
+        }
+    }
+
+    #[test]
+    fn renders_a_pull_line_and_sorts_newest_first() {
+        let pull = json!({"number": 14, "title": "forge-pull: x", "state": "closed",
+            "merged": true, "labels": [{"name": "a"}],
+            "head": {"ref": "guild/tasks-226", "sha": "0123456789abcdef0123"},
+            "base": {"ref": "main"}});
+        assert_eq!(
+            render_pull_line(&pull),
+            "#14 merged guild/tasks-226 -> main 0123456789ab [a] forge-pull: x\n"
+        );
+        assert!(heads(&pull, Some("guild/tasks-226")));
+        assert!(heads(&pull, None));
+        assert!(!heads(&pull, Some("guild/tasks")));
+        let mut items = vec![
+            json!({"number": 2}),
+            json!({"number": 9}),
+            json!({"number": 5}),
+        ];
+        newest_first(&mut items);
+        let order: Vec<u64> = items.iter().map(number).collect();
+        assert_eq!(order, [9, 5, 2]);
     }
 
     #[test]

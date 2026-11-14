@@ -1,5 +1,5 @@
 //! A stand-in Forgejo for forge-read's tests, on 127.0.0.1: the issue,
-//! comments and issue-search calls forge-read makes, with Forgejo's paging
+//! comments, issue-search and pulls calls forge-read makes, with Forgejo's paging
 //! (`page`, `limit` capped at 50, `X-Total-Count`), its label match (any
 //! of the labels), its sign-in rule and 404. It records every request's
 //! method and target, so a test can show forge-read only GETs.
@@ -23,6 +23,9 @@ pub struct Data {
     pub issues: Vec<Value>,
     /// Issue number, then its comments, oldest first.
     pub comments: Vec<(u64, Vec<Value>)>,
+    /// Every pull as the pulls endpoint answers it, with head and base, in
+    /// the order it is served.
+    pub pulls: Vec<Value>,
 }
 
 pub struct Fake {
@@ -201,6 +204,17 @@ fn serve(data: &Data, log: &Mutex<Vec<String>>, stream: TcpStream) {
                         .iter()
                         .any(|l| labels.contains(&l["name"].as_str().unwrap()))
             })
+            .collect();
+        return page(stream, &all, &q);
+    }
+    if rest == "pulls" {
+        // Forgejo's pulls endpoint: state open, closed (merged included) or
+        // all; it takes labels only by id, and has no head filter.
+        let state = get("state").unwrap_or("open");
+        let all: Vec<&Value> = data
+            .pulls
+            .iter()
+            .filter(|p| state == "all" || p["state"] == state)
             .collect();
         return page(stream, &all, &q);
     }
