@@ -10,8 +10,9 @@ use std::time::Duration;
 use serde_json::Value;
 
 use crate::{
-    carries, id, more, parse, render_comments, render_issue, render_line, Asked, Kind, Repo, State,
-    EXIT_FAIL, EXIT_USAGE, HELP, NAME, PAGE_LIMIT, USAGE,
+    carries, heads, id, more, newest_first, parse, render_comments, render_issue, render_line,
+    render_pull_line, Asked, Kind, Repo, State, EXIT_FAIL, EXIT_USAGE, HELP, NAME, PAGE_LIMIT,
+    USAGE,
 };
 
 /// Why a read failed: said on stderr with its fix, exit 1.
@@ -187,7 +188,11 @@ fn list(
     kind: Kind,
     labels: &[String],
     state: State,
+    head: Option<&str>,
 ) -> Result<String, Fail> {
+    if kind == Kind::Pulls {
+        return pulls(f, repo, labels, state, head);
+    }
     let mut query = vec![
         ("state", state.query().to_string()),
         ("type", kind.query().to_string()),
@@ -202,6 +207,27 @@ fn list(
         .iter()
         .filter(|i| carries(i, labels))
         .map(render_line)
+        .collect())
+}
+
+/// Every pull of a repo from its pulls endpoint, which has each pull's
+/// head and base. It takes labels only by id, so forge-read sends none and
+/// keeps the pulls carrying each label, and the head it keeps likewise.
+fn pulls(
+    f: &Forgejo,
+    repo: &Repo,
+    labels: &[String],
+    state: State,
+    head: Option<&str>,
+) -> Result<String, Fail> {
+    let query = vec![("state", state.query().to_string())];
+    let path = format!("repos/{}/{}/pulls", repo.owner, repo.name);
+    let mut items = f.all(&path, &query, &format!("{repo}"))?;
+    newest_first(&mut items);
+    Ok(items
+        .iter()
+        .filter(|p| carries(p, labels) && heads(p, head))
+        .map(render_pull_line)
         .collect())
 }
 
@@ -235,7 +261,8 @@ pub fn main() -> ExitCode {
                 kind,
                 labels,
                 state,
-            } => list(&f, repo, *kind, labels, *state),
+                head,
+            } => list(&f, repo, *kind, labels, *state, head.as_deref()),
             Asked::Help | Asked::Version => Ok(String::new()),
         }
     };

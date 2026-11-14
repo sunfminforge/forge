@@ -1,6 +1,8 @@
 //! forge-read's binary against a stand-in Forgejo: an issue with and
 //! without its comments (more than one page of them), a list by label and
-//! by state, a not-found issue, and each refusal with its fix. Offline:
+//! by state, the pulls of a repo from its pulls endpoint with head, base
+//! and sha (more than one page of them) by state, label and head branch, a
+//! not-found issue, and each refusal with its fix. Offline:
 //! nothing reaches a real forge.
 
 mod forgejo;
@@ -28,6 +30,62 @@ fn item(number: u64, state: &str, labels: &[&str], title: &str, pull: Option<boo
         "body": format!("Body of #{number}.\n\nSecond paragraph."),
         "pull_request": pull.map(|m| json!({"merged": m})),
     })
+}
+
+fn pull(number: u64, state: &str, merged: bool, labels: &[&str], head: &str, title: &str) -> Value {
+    json!({
+        "id": 7000 + number,
+        "number": number,
+        "title": title,
+        "state": state,
+        "merged": merged,
+        "labels": labels.iter().map(|l| label(l)).collect::<Vec<_>>(),
+        "user": {"login": "felix"},
+        "head": {"ref": head, "sha": format!("{number:04}abcdef0123456789abcdef0123456789abcd")},
+        "base": {"ref": "main"},
+    })
+}
+
+/// Bulk pulls #1..=#60 and three by hand: more than one page of 50, served
+/// oldest first so newest first is forge-read's own doing.
+fn pulls() -> Vec<Value> {
+    let mut out: Vec<Value> = (1..=60)
+        .map(|n| {
+            pull(
+                n,
+                "open",
+                false,
+                &["bulk"],
+                &format!("guild/tasks-{n}"),
+                &format!("Bulk pull {n}"),
+            )
+        })
+        .collect();
+    out.push(pull(
+        88,
+        "closed",
+        false,
+        &["pr"],
+        "guild/tasks-88",
+        "A pull, closed unmerged",
+    ));
+    out.push(pull(
+        89,
+        "closed",
+        true,
+        &["pr", "tool-request"],
+        "guild/tasks-226",
+        "forge-pull: open a pull",
+    ));
+    out.push(pull(
+        90,
+        "open",
+        false,
+        &["pr"],
+        "guild/tasks-226",
+        "A pull, open, again from tasks-226",
+    ));
+    out
 }
 
 /// 120 comments on #64: three pages of Forgejo's 50.
@@ -87,6 +145,7 @@ fn data() -> Data {
     Data {
         issues,
         comments: vec![(64, comments), (1, vec![])],
+        pulls: pulls(),
     }
 }
 
@@ -216,7 +275,10 @@ fn list_by_label() {
             "--state=all",
         ],
     );
-    assert_eq!(stdout(&o), "#89 merged [pr,tool-request] A pull, merged\n");
+    assert_eq!(
+        stdout(&o),
+        "#89 merged guild/tasks-226 -> main 0089abcdef01 [pr,tool-request] forge-pull: open a pull\n"
+    );
     only_gets(&fake);
 }
 
@@ -244,10 +306,9 @@ fn list_by_state() {
         TOKEN,
         &["list", "guild/tasks", "pulls", "--state", "all"],
     );
-    assert_eq!(
-        stdout(&o),
-        "#90 open [pr] A pull, open\n#89 merged [pr,tool-request] A pull, merged\n#88 closed [pr] A pull, closed unmerged\n"
-    );
+    assert!(stdout(&o).starts_with(
+        "#90 open guild/tasks-226 -> main 0090abcdef01 [pr] A pull, open, again from tasks-226\n#89 merged guild/tasks-226 -> main 0089abcdef01 [pr,tool-request] forge-pull: open a pull\n#88 closed guild/tasks-88 -> main 0088abcdef01 [pr] A pull, closed unmerged\n"
+    ));
     only_gets(&fake);
 }
 
@@ -320,4 +381,138 @@ fn help_and_version() {
         stdout(&o),
         format!("forge-read {}\n", env!("CARGO_PKG_VERSION"))
     );
+}
+
+const SHA89: &str = "0089abcdef01";
+
+#[test]
+fn list_pulls_prints_head_base_sha_newest_first_across_pages() {
+    let fake = Fake::new(data());
+    let o = run(
+        &fake,
+        TOKEN,
+        &["list", "guild/tasks", "pulls", "--state", "all"],
+    );
+    assert_eq!(o.status.code(), Some(0), "{}", stderr(&o));
+    let out = stdout(&o);
+    let lines: Vec<&str> = out.lines().collect();
+    assert_eq!(lines.len(), 63, "every page read: {out}");
+    assert_eq!(
+        &lines[..4],
+        [
+            "#90 open guild/tasks-226 -> main 0090abcdef01 [pr] A pull, open, again from tasks-226",
+            &format!("#89 merged guild/tasks-226 -> main {SHA89} [pr,tool-request] forge-pull: open a pull"),
+            "#88 closed guild/tasks-88 -> main 0088abcdef01 [pr] A pull, closed unmerged",
+            "#60 open guild/tasks-60 -> main 0060abcdef01 [bulk] Bulk pull 60",
+        ]
+    );
+    assert_eq!(
+        lines[62],
+        "#1 open guild/tasks-1 -> main 0001abcdef01 [bulk] Bulk pull 1"
+    );
+    let reads: Vec<String> = fake.requests();
+    assert!(
+        reads
+            .iter()
+            .all(|r| r.starts_with("GET /api/v1/repos/guild/tasks/pulls?")),
+        "the pulls endpoint, not issue search: {reads:?}"
+    );
+    assert_eq!(reads.len(), 2, "two pages of 50: {reads:?}");
+    only_gets(&fake);
+}
+
+#[test]
+fn filters_narrow_list_pulls_by_state_label_and_head() {
+    let fake = Fake::new(data());
+    let lines = |args: &[&str]| {
+        let o = run(&fake, TOKEN, args);
+        assert_eq!(o.status.code(), Some(0), "{args:?}: {}", stderr(&o));
+        stdout(&o)
+    };
+    // Open is the default: the two closed pulls are not listed.
+    let open = lines(&["list", "guild/tasks", "pulls"]);
+    assert_eq!(open.lines().count(), 61);
+    assert!(open.lines().all(|l| l.split(' ').nth(1) == Some("open")));
+    // Closed takes in the merged pull.
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--state", "closed"]),
+        format!("#89 merged guild/tasks-226 -> main {SHA89} [pr,tool-request] forge-pull: open a pull\n#88 closed guild/tasks-88 -> main 0088abcdef01 [pr] A pull, closed unmerged\n")
+    );
+    // Each label is required.
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--state=all", "--label", "pr", "--label", "tool-request"]),
+        format!("#89 merged guild/tasks-226 -> main {SHA89} [pr,tool-request] forge-pull: open a pull\n")
+    );
+    // The head branch, whole: guild/tasks-2 is not guild/tasks-226.
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--state", "all", "--head", "guild/tasks-226"]),
+        format!("#90 open guild/tasks-226 -> main 0090abcdef01 [pr] A pull, open, again from tasks-226\n#89 merged guild/tasks-226 -> main {SHA89} [pr,tool-request] forge-pull: open a pull\n")
+    );
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--state=closed", "--head=guild/tasks-226"]),
+        format!("#89 merged guild/tasks-226 -> main {SHA89} [pr,tool-request] forge-pull: open a pull\n")
+    );
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--head", "guild/tasks-2"]),
+        "#2 open guild/tasks-2 -> main 0002abcdef01 [bulk] Bulk pull 2\n"
+    );
+    assert_eq!(
+        lines(&["list", "guild/tasks", "pulls", "--head", "nobody"]),
+        ""
+    );
+    only_gets(&fake);
+}
+
+#[test]
+fn filters_refuse_head_twice_or_without_a_value_with_usage() {
+    let fake = Fake::new(data());
+    for args in [
+        &["list", "guild/tasks", "pulls", "--head", "a", "--head", "b"][..],
+        &["list", "guild/tasks", "pulls", "--head"],
+        &["list", "guild/tasks", "pulls", "--head="],
+        &["list", "guild/tasks", "issues", "--head", "a"],
+    ] {
+        let o = run(&fake, TOKEN, args);
+        assert_eq!(o.status.code(), Some(2), "{args:?}");
+        assert_eq!(stdout(&o), "");
+        let err = stderr(&o);
+        assert!(err.starts_with("usage: forge-read issue"), "{err}");
+        assert!(err.contains("[--head <branch>]"), "{err}");
+        assert!(err.contains("--head"), "{err}");
+        assert!(err.contains("see forge-read --help"), "{err}");
+    }
+    let err = stderr(&run(
+        &fake,
+        TOKEN,
+        &["list", "guild/tasks", "pulls", "--head", "a", "--head", "b"],
+    ));
+    assert!(err.contains("--head is given once"), "{err}");
+    let err = stderr(&run(
+        &fake,
+        TOKEN,
+        &["list", "guild/tasks", "pulls", "--head"],
+    ));
+    assert!(err.contains("--head takes a value"), "{err}");
+    assert!(
+        fake.requests().is_empty(),
+        "a refused command reads nothing"
+    );
+}
+
+#[test]
+fn filters_leave_list_issues_as_before() {
+    let fake = Fake::new(data());
+    let o = run(
+        &fake,
+        TOKEN,
+        &["list", "guild/tasks", "issues", "--state", "closed"],
+    );
+    assert_eq!(o.status.code(), Some(0), "{}", stderr(&o));
+    assert_eq!(
+        stdout(&o),
+        "#63 closed [task] A closed task\n#61 closed [goal,tool-request] tool-request: read a pull\n"
+    );
+    assert!(fake.requests().iter().all(
+        |r| r.starts_with("GET /api/v1/repos/guild/tasks/issues?") && r.contains("type=issues")
+    ));
 }
