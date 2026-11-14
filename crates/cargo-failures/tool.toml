@@ -1,0 +1,5 @@
+name = "cargo-failures"
+version = "0.1.0"
+purpose = "Runs cargo build or test once in the current Rust workspace and prints only the compile errors (each rustc error with its code, file:line and message; warnings dropped), the failing tests each with its panic message, and every 'test result:' line; exits with cargo's own exit code."
+usage = "cargo-failures build|test [cargo args…]"
+roles = ["rust-cli-coder", "rust-web-coder"]
