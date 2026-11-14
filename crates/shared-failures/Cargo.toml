@@ -3,4 +3,9 @@ name = "shared-failures"
 version = "0.1.0"
 edition = "2021"
 publish = false
-description = "A detector of the trainer crew; its detector is detect.py, embedded and run by python3."
+description = "A detector of the trainer crew: one failure or send-back reason shared by the tasks of several roles."
+
+[dependencies]
+regex = "1"
+serde_json = "1"
+ureq = "2.12"
