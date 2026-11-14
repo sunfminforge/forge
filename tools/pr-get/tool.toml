@@ -1,0 +1,5 @@
+name = "pr-get"
+version = "0.1.0"
+purpose = "Fetches one pull request of Guild's Forgejo, or of GitHub, with one call (GET /repos/{owner}/{repo}/pulls/{number}) and prints it as JSON, all of it or the fields named, instead of curl or gh api by hand."
+usage = "pr-get <OWNER/REPO> <NUMBER> [--field <FIELD>,...] [--api <URL>] [--token-env <NAME>]   (pr-get --help; pr-get doctor)"
+roles = ["trainer", "warden"]
