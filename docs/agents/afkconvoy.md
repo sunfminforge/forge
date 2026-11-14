@@ -7,3 +7,5 @@ base_branch: main
 gate_command: guild exclusive -- sh gate.sh
 gate_seconds: 1800
 ```
+
+Before review, run `guild forge check .`: it checks each tool's `tool.toml` as `guild forge publish` reads it, and the gate runs it too, so a tool publish would refuse never lands.
