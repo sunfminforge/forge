@@ -1,0 +1,34 @@
+[package]
+name = "pr-get"
+description = "One pull request of a Forgejo or GitHub repository, GET /repos/{owner}/{repo}/pulls/{number}, printed as JSON with its fields selectable; read first by an agent"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+# Its own workspace: forge's root workspace is `crates/*`, and this crate is
+# built and tested on its own, `cargo test --manifest-path tools/pr-get/Cargo.toml`.
+[workspace]
+
+[dependencies]
+# The Flux commit that Homebrew's sunfmin/tap/flux-toolchain, the newest the
+# tap has, was built from: `brew info sunfmin/tap/flux-toolchain` names it.
+flux-rs = { git = "https://github.com/flux-rs/flux.git", rev = "ef6af17f647cf98c860e18e90c36d1f1b69849ff" }
+flux-core = { git = "https://github.com/flux-rs/flux.git", rev = "ef6af17f647cf98c860e18e90c36d1f1b69849ff" }
+flux-alloc = { git = "https://github.com/flux-rs/flux.git", rev = "ef6af17f647cf98c860e18e90c36d1f1b69849ff" }
+agent-help = { git = "https://github.com/sunfmin/agent-cli.git", rev = "f506df826a97b2fd834e1d65b9057001a6a6e796" }
+clap = { version = "4.5", features = ["derive", "env"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+
+[dev-dependencies]
+proptest = "1"
+
+# `cargo flux` (through ./verify.sh) checks every function of this crate, and
+# ./gate.sh fails unless none is trusted or ignored.
+[package.metadata.flux]
+enabled = true
+check-overflow = "strict"
+
+[lints.rust]
+unsafe_code = "forbid"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(flux)'] }
