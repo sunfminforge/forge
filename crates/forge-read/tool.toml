@@ -1,0 +1,5 @@
+name = "forge-read"
+version = "0.1.0"
+purpose = "Reads Guild's Forgejo in one call, read-only, as plain text with the instance's own account (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN): one issue with its number, title, state, labels, author, body and every comment, or one line per issue or pull of a repo by label and state."
+usage = "forge-read issue <owner/repo> <n> [--comments] | forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all]"
+roles = ["steward", "warden", "trainer", "rust-cli-coder"]
