@@ -1,0 +1,10 @@
+[package]
+name = "apply-edits"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Applies SEARCH/REPLACE blocks read on stdin to one file, every block or none: each search text must match exactly once (or every match, when the block asks), and the changed regions print numbered."
+
+[dependencies]
+memchr = "2.8.3"
+tempfile = "3.27.0"
