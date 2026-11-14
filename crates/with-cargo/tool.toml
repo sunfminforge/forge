@@ -1,0 +1,5 @@
+name = "with-cargo"
+version = "0.1.0"
+purpose = "Runs a command, such as 'cargo test -p feed-parse', with the cargo bin dir ($CARGO_HOME/bin when CARGO_HOME is set, else $HOME/.cargo/bin) put first on that command's PATH, and exits with the command's exit code, so cargo runs in one step from a shell whose PATH lacks ~/.cargo/bin; --dir prints the dir it would use; exits 127 naming the dirs it looked in when none holds cargo."
+usage = "with-cargo <command> [args…] | with-cargo --dir"
+roles = ["warden"]

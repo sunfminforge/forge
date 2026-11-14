@@ -1,0 +1,8 @@
+[package]
+name = "with-cargo"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Runs a command with the cargo bin dir ($CARGO_HOME/bin, else ~/.cargo/bin) put first on its PATH, exiting with that command's exit code, so cargo runs from a shell whose PATH lacks it."
+
+[dependencies]
