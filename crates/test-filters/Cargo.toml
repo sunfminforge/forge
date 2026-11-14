@@ -1,0 +1,9 @@
+[package]
+name = "test-filters"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Runs a package's tests once per named filter and answers, per filter, how many tests ran and passed; fails when any filter matches no test or any test fails."
+
+[dependencies]
+serde_json = "1"

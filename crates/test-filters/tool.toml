@@ -1,0 +1,5 @@
+name = "test-filters"
+version = "0.1.0"
+purpose = "Runs one package's tests once per named filter (one per acceptance item, say) with cargo test, and answers one JSON object: per filter how many tests ran, passed, failed and were ignored. Exits 1 when any filter matches no test or any test fails, so an item never looks green with no test behind it."
+usage = "test-filters -p <package> <filter>... [--version]"
+roles = ["warden", "rust-cli-coder"]
