@@ -146,7 +146,7 @@ fn a_lesson_is_read_from_stdin_with_a_dash() {
     assert_eq!(o.status.code(), Some(0));
     assert_eq!(
         calls(&d),
-        "call: lesson --role warden --task 313\nstdin:\nread me\n"
+        "call: lesson --role warden --task guild/tasks#313\nstdin:\nread me\n"
     );
 }
 
@@ -253,14 +253,14 @@ fn a_part_guild_refuses_is_reported_and_the_others_still_run() {
         calls(&d),
         "call: task check 313 a --evidence x\n\
          call: task check 313 b --evidence y\n\
-         call: lesson --role warden --task 313\nstdin:\nfine\n\
+         call: lesson --role warden --task guild/tasks#313\nstdin:\nfine\n\
          call: task used 313 w/core.md#z\n"
     );
     assert_eq!(
         out(&o),
         "== check a: recorded\nkept: task check 313 a --evidence x\n\n\
          == check b: refused\nrefused: task check 313 b said no\nguild exited 1; fix what it says and run hand-in again with only this part\n\n\
-         == lesson: recorded\nkept: lesson --role warden --task 313\n\n\
+         == lesson: recorded\nkept: lesson --role warden --task guild/tasks#313\n\n\
          == used: recorded\nkept: task used 313 w/core.md#z\n"
     );
 }

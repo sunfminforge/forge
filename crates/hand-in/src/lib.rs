@@ -29,7 +29,7 @@ const HELP: &str = concat!(
     "  hand-in 313 --check tests --evidence 'cargo test -p hand-in: test result: ok. 9 passed; 0 failed' \\\n",
     "    --role rust-cli-coder --lesson 'A fake guild on PATH is a shell script the test writes.' \\\n",
     "    --used rust-cli-coder/core.md#read-first rust-cli-coder/core.md#test-the-binary\n\n",
-    "<task> is passed to guild as given, a number (313) or a reference (guild/tasks#313).\n\n",
+    "<task> is a number (313) or a reference (guild/tasks#313), passed to guild task check and guild task used as given; guild lesson --task is given the reference, guild/tasks#<n> for a number, since it keeps the task as written.\n\n",
     "The parts, run in this order, each one guild call:\n",
     "  --check <item> --evidence <text>   guild task check <task> <item> --evidence <text>. Repeat the pair for each item; each runs on its own.\n",
     "  --lesson <text> | --lesson -       guild lesson --role <role> --task <task> [--failed] [--external <kind>]..., the lesson on its stdin. '-' reads the lesson from hand-in's stdin. --role is needed with it; --failed and each --external <kind> go with it and only with it.\n",
@@ -233,6 +233,17 @@ pub fn lesson_refusal(text: &str) -> Option<String> {
     }
 }
 
+/// The task as `guild lesson --task` keeps it: a bare number is an issue
+/// of guild/tasks, as `guild task check` and `guild task used` read it;
+/// a reference is passed as given.
+pub fn lesson_task(task: &str) -> String {
+    if !task.is_empty() && task.bytes().all(|b| b.is_ascii_digit()) {
+        format!("guild/tasks#{task}")
+    } else {
+        task.to_string()
+    }
+}
+
 /// One guild call: what it is called in the output, its arguments, its
 /// stdin.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -278,7 +289,7 @@ pub fn plan(parts: &Parts, lesson_text: Option<&str>) -> Vec<Step> {
                     s("--role"),
                     l.role.clone(),
                     s("--task"),
-                    parts.task.clone(),
+                    lesson_task(&parts.task),
                 ];
                 if l.failed {
                     args.push(s("--failed"));
