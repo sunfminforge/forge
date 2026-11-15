@@ -1,9 +1,9 @@
 # hand-in
 
-Ends a task in one call, instead of `guild task check`, then `printf '…' | guild lesson`, then `guild task used` and a look to see each took. Each part is optional and runs as its own guild call: every `--check <item> --evidence <text>` is a `guild task check`; `--lesson <text>` (or `--lesson -` for stdin) with `--role` is a `guild lesson --role <role> --task <task>`, with `--failed` and each `--external <kind>` as given; every `--used <file>#<id>` goes in one `guild task used`. A lesson over 3 lines, or empty, is refused before anything is sent. A refused part never hides the others: each prints under `== <part>: recorded|refused` what guild said, or why it was refused and the fix, and the exit code is 1 when any part was refused.
+Ends a task in one call, instead of `guild task check`, then `printf '…' | guild lesson`, then `guild task used` and a look to see each took. Each part is optional and runs as its own guild call: every `--check <item> --evidence <text>` is a `guild task check`; `--lesson <text>` (or `--lesson -` for stdin) with `--role` is a `guild lesson --role <role> --task <task>`, with `--failed` and each `--external <kind>` as given; every `<file>#<id>` named after `--used`, one or several, goes in one `guild task used`. A lesson over 3 lines, or empty, is refused before anything is sent. A refused part never hides the others: each prints under `== <part>: recorded|refused` what guild said, or why it was refused and the fix, and the exit code is 1 when any part was refused.
 
 ```
-hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>]...
+hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>...]...
 ```
 
 Run `hand-in --help` for each part, what it prints and how it fails. Released by forge as a tool of the flow-keeper, rust-cli-coder, trainer and warden:

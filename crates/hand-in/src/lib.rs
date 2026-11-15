@@ -19,22 +19,22 @@ pub const MAX_LESSON_LINES: usize = 3;
 /// The program every part calls.
 pub const GUILD: &str = "guild";
 
-pub const USAGE: &str = "usage: hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>]...";
+pub const USAGE: &str = "usage: hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>...]...";
 
 /// What `--help` answers, before its constants are put in by `help`.
 const HELP: &str = concat!(
-    "usage: hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>]...\n",
+    "usage: hand-in <task> [--check <item> --evidence <text>]... [--role <role> --lesson <text>|- [--failed] [--external <kind>]...] [--used <file>#<id>...]...\n",
     "       hand-in --version\n\n",
     "Ends a task in one call instead of guild task check, then printf '…' | guild lesson, then guild task used and a look to see each took. Every part is optional; name at least one. Example:\n",
     "  hand-in 313 --check tests --evidence 'cargo test -p hand-in: test result: ok. 9 passed; 0 failed' \\\n",
     "    --role rust-cli-coder --lesson 'A fake guild on PATH is a shell script the test writes.' \\\n",
-    "    --used rust-cli-coder/core.md#read-first --used rust-cli-coder/core.md#test-the-binary\n\n",
+    "    --used rust-cli-coder/core.md#read-first rust-cli-coder/core.md#test-the-binary\n\n",
     "<task> is passed to guild as given, a number (313) or a reference (guild/tasks#313).\n\n",
     "The parts, run in this order, each one guild call:\n",
     "  --check <item> --evidence <text>   guild task check <task> <item> --evidence <text>. Repeat the pair for each item; each runs on its own.\n",
     "  --lesson <text> | --lesson -       guild lesson --role <role> --task <task> [--failed] [--external <kind>]..., the lesson on its stdin. '-' reads the lesson from hand-in's stdin. --role is needed with it; --failed and each --external <kind> go with it and only with it.\n",
     "                                     A lesson of more than {MAX} lines, or an empty one, is refused before anything is sent. Trailing newlines are not lines.\n",
-    "  --used <file>#<id>                 every --used, in the order given, in one guild task used <task> <file>#<id>... call.\n\n",
+    "  --used <file>#<id>...              every entry named, after one --used or several, in the order given, in one guild task used <task> <file>#<id>... call.\n\n",
     "What it prints, on stdout, per part in the order run, a blank line between parts:\n",
     "  == check <item>: recorded          then what guild printed, its stdout then its stderr\n",
     "  == lesson: refused                 then why, and the line that fixes it\n",
@@ -122,8 +122,13 @@ pub fn parse(args: &[String]) -> Result<Asked, String> {
     let mut failed = false;
     let mut external = Vec::new();
     let mut used = Vec::new();
+    // After --used, every argument up to the next option is an entry.
+    let mut in_used = false;
     let mut it = args.iter();
     while let Some(a) = it.next() {
+        if a.starts_with('-') {
+            in_used = false;
+        }
         match a.as_str() {
             "-h" | "--help" => return Ok(Asked::Help),
             "--check" => {
@@ -156,10 +161,14 @@ pub fn parse(args: &[String]) -> Result<Asked, String> {
             }
             "--failed" => failed = true,
             "--external" => external.push(value(&mut it, a)?.clone()),
-            "--used" => used.push(value(&mut it, a)?.clone()),
+            "--used" => {
+                used.push(value(&mut it, a)?.clone());
+                in_used = true;
+            }
             f if f.starts_with('-') && f.len() > 1 => {
                 return Err(format!("no such option: {f}"));
             }
+            t if in_used => used.push(t.to_string()),
             t => {
                 if let Some(first) = &task {
                     return Err(format!(

@@ -309,3 +309,29 @@ fn help_and_version_answer_exit_zero() {
     let o = run(&d, &["--version"], "");
     assert_eq!(out(&o), format!("hand-in {}\n", env!("CARGO_PKG_VERSION")));
 }
+
+#[test]
+fn several_entries_after_one_used_go_in_the_same_call() {
+    let d = scratch(None);
+    let o = run(
+        &d,
+        &[
+            "313",
+            "--used",
+            "a/core.md#x",
+            "a/core.md#y",
+            "--check",
+            "t",
+            "--evidence",
+            "e",
+            "--used",
+            "a/core.md#z",
+        ],
+        "",
+    );
+    assert_eq!(o.status.code(), Some(0));
+    assert_eq!(
+        calls(&d),
+        "call: task check 313 t --evidence e\ncall: task used 313 a/core.md#x a/core.md#y a/core.md#z\n"
+    );
+}
