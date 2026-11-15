@@ -1,0 +1,14 @@
+[package]
+name = "subst"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Applies one or more regex substitutions (capture groups in the replacement, an optional required match count) to several files in one call, checking every one before writing any file, and prints per file each changed region numbered."
+
+[dependencies]
+# apply-edits' region printer, so subst prints changed lines as it does.
+apply-edits = { path = "../apply-edits" }
+# The regex engine, pinned: the version ripgrep's grep-regex already
+# brings into forge's lock.
+regex = "=1.13.1"
+tempfile = "3.27.0"
