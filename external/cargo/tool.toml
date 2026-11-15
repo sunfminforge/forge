@@ -1,8 +1,10 @@
 # An external tool: installed by its recipe on the machine that runs the work, when
-# the work needs it (sunfmin/control#1066).
+# the work needs it (sunfmin/control#1066). Its cargo is huacnlee/cargo over rustup's
+# proxy, kept as cargo.rustup; cargo.sha256 is of the cargo its archive holds
+# (sunfmin/control#1144).
 name = "cargo"
-version = "1.0.0"
-purpose = "Rust's toolchain, stable and minimal, with clippy and rustfmt"
+version = "1.1.0"
+purpose = "Rust's toolchain, stable and minimal, with clippy and rustfmt; its cargo huacnlee/cargo"
 usage = "cargo <command> [args…]"
 roles = ["coder"]
 gives = ["cargo", "rustup"]
@@ -11,3 +13,4 @@ gives = ["cargo", "rustup"]
 by = "rustup"
 url = "https://static.rust-lang.org/rustup/archive/1.29.3/aarch64-apple-darwin/rustup-init"
 sha256 = "63752a1919a3a4793173ec70f8f212621a7ce38ba6a246095984482f4de20f9f"
+cargo = { version = "0.102.0-9", url = "https://github.com/huacnlee/cargo/releases/download/v0.102.0-9/cargo-0.102.0-9-aarch64-apple-darwin.tar.gz", sha256 = "287d943b5db3a1988211fc2a1afdd21311c16b568a2a408619b5752444e3f1ce" }
