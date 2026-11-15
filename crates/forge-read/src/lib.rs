@@ -39,7 +39,7 @@ pub const HELP: &str = concat!(
     "    --label <name>          only items carrying this label; give it again to require each of several\n",
     "    --state open|closed|all which items by state (open); a merged pull's state is printed merged, and is closed to --state\n",
     "    --head <branch>         pulls only: only pulls whose head branch is this one, as in guild/tasks-226; given once\n\n",
-    "list issues reads Forgejo's issue search; list pulls reads the repo's pulls (GET /repos/<owner>/<repo>/pulls), every page of either.\n\n",
+    "It replaces, each in one call: GET /repos/<owner>/<repo>/issues/<n> (issue), GET /repos/<owner>/<repo>/issues/<n>/comments (issue --comments), GET /repos/<owner>/<repo>/pulls (list pulls) and the issue search GET /repos/<owner>/<repo>/issues?state=&labels= (list issues), reading every page of a list.\n\n",
     "issue prints, each on its own line: number: <n>, title: <title>, state: <state>, labels: <a, b>, author: <login>, created: <time>, then a blank line and the body as written. With --comments: a blank line, comments: <count>, and for each comment a blank line, --- comment <i> of <count> by <login> at <time>, and its body.\n\n",
     "Exits 0 with the answer on stdout. Exits 1 with the cause and its fix on stderr when GUILD_FORGEJO_URL or GUILD_FORGEJO_TOKEN is unset, Forgejo refuses the token or cannot be reached, or the repo or issue is not found; exits 2 with the usage on stderr on an argument it does not take.\n",
 );
