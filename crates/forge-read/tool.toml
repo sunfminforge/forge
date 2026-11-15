@@ -1,5 +1,5 @@
 name = "forge-read"
-version = "0.2.1"
-purpose = "Reads Guild's Forgejo in one call, read-only, as plain text with the instance's own account (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN): one issue with its number, title, state, labels, author, body and every comment; one line per issue of a repo by label and state; or one line per pull from the repo's pulls endpoint, newest first, with state (open, closed or merged), head branch -> base, head sha (12) and labels, by state, label and head branch."
+version = "0.2.2"
+purpose = "Use it in place of GET /repos/{o}/{r}/issues/{n}, GET /repos/{o}/{r}/issues/{n}/comments, GET /repos/{o}/{r}/pulls and the issue search (GET /repos/{o}/{r}/issues?state=&labels=) by hand. Reads Guild's Forgejo in one call, read-only, as plain text with the instance's own account (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN): one issue with its number, title, state, labels, author, body and every comment; one line per issue of a repo by label and state; or one line per pull from the repo's pulls endpoint, newest first, with state (open, closed or merged), head branch -> base, head sha (12) and labels, by state, label and head branch."
 usage = "forge-read issue <owner/repo> <n> [--comments] | forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all] [--head <branch>]"
 roles = ["steward", "foreman", "warden", "trainer", "rust-cli-coder", "rust-web-coder"]

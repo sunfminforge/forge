@@ -7,4 +7,11 @@ forge-read issue <owner/repo> <n> [--comments]
 forge-read list <owner/repo> issues|pulls [--label <name>]... [--state open|closed|all] [--head <branch>]
 ```
 
-Run `forge-read --help` for what each prints and how it fails. Released by forge as a tool of steward, warden, trainer, rust-cli-coder and rust-web-coder: `guild tool forge-read …`. Tests, offline against a stand-in Forgejo: `cargo test -p forge-read` at forge's root.
+It replaces these Forgejo calls made by hand (curl, a token, then parsing JSON):
+
+- `GET /repos/{o}/{r}/issues/{n}`: `forge-read issue <o>/<r> <n>`
+- `GET /repos/{o}/{r}/issues/{n}/comments`, every page: `forge-read issue <o>/<r> <n> --comments`
+- `GET /repos/{o}/{r}/pulls`, every page: `forge-read list <o>/<r> pulls [--state …] [--label …] [--head …]`
+- the issue search, `GET /repos/{o}/{r}/issues?state=…&labels=…`, every page: `forge-read list <o>/<r> issues [--state …] [--label …]`
+
+Run `forge-read --help` for what each prints and how it fails. Released by forge as a tool of steward, foreman, warden, trainer, rust-cli-coder and rust-web-coder: `guild tool forge-read …`. Tests, offline against a stand-in Forgejo: `cargo test -p forge-read` at forge's root.

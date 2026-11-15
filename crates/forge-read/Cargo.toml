@@ -1,6 +1,6 @@
 [package]
 name = "forge-read"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 publish = false
 description = "Reads Guild's Forgejo, read-only, as plain text: one issue with its labels and every comment, a repo's issues by label and state, or its pulls with head, base and sha by label, state and head branch."
