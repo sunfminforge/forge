@@ -1,0 +1,8 @@
+[package]
+name = "hand-in"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Ends a task in one call: records items' evidence (guild task check), hands in a lesson of at most 3 lines (guild lesson) and names the memory entries used (guild task used), each part optional, and prints per part what was recorded or why it was refused."
+
+[dependencies]
