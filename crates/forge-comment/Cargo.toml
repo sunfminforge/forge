@@ -1,0 +1,10 @@
+[package]
+name = "forge-comment"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Says something on a Guild issue in one call: posts a comment with the instance's own account, or edits one it wrote, and prints the comment's id and URL, as plain text."
+
+[dependencies]
+serde_json = "1"
+ureq = "2.12"
