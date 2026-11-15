@@ -1,0 +1,5 @@
+name = "tree-grep"
+version = "0.1.0"
+purpose = "Does ls, ls and grep in one call: given a pattern and one or more directories, prints per directory a '== tree <dir>' header and its entries recursively down to --depth N (default 2), one per line, indented two spaces per level, sorted, each directory with a trailing '/'; then per file under it holding a match a '== <file>' header and each matching line numbered ('<line>: <text>'), with --context N lines around it (default 0) printed as grep-around prints regions. Honours .gitignore and skips target/, .git/, hidden and binary files, in the tree and the search alike; --glob <g> (repeatable) narrows the files searched, --fixed takes the pattern as text; a missing directory prints an 'error: ' line under its header while the others still print. Exits 0 with matches, 1 with none, 2 on a bad pattern or a missing path. Read-only. A file's regions alone are grep-around's; a mixed read of files and directories is peek's."
+usage = "tree-grep <pattern> [dir…] [--depth N] [--glob <g>]... [--context N] [--fixed]"
+roles = ["foreman", "rust-cli-coder", "trainer", "warden"]

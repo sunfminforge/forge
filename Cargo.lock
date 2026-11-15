@@ -1425,6 +1425,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tree-grep"
+version = "0.1.0"
+dependencies = [
+ "grep-around",
+ "grep-matcher",
+ "grep-regex",
+ "grep-searcher",
+ "ignore",
+]
+
+[[package]]
 name = "unarray"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
