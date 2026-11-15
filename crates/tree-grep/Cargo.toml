@@ -1,0 +1,18 @@
+[package]
+name = "tree-grep"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Prints per directory its tree down to a depth, sorted, each directory with a trailing '/', then each file under it holding a match with its matching lines numbered, in one call instead of ls, ls and grep."
+
+[dependencies]
+# grep-around's library: its lines, binary test, regions and their
+# printing, so a region reads here as it does there.
+grep-around = { path = "../grep-around" }
+# ripgrep's library crates, at the versions grep-around pins: the matcher
+# interface, the regex matcher, the line searcher, and the directory
+# walker that honours .gitignore and globs (ignore).
+grep-matcher = "=0.1.9"
+grep-regex = "=0.1.14"
+grep-searcher = "=0.1.17"
+ignore = "=0.4.34"
