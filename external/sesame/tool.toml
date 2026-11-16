@@ -1,0 +1,13 @@
+# An external tool: installed by its recipe on the machine that runs the work, when
+# the work needs it (sunfmin/control#1066). sesame reaches a service with no good CLI
+# (sunfmin/control#1185).
+name = "sesame"
+version = "1.0.0"
+purpose = "Signs in to SaaS APIs with no CLI of their own and calls their REST APIs"
+usage = "sesame api <service> <path>"
+roles = ["coder"]
+gives = ["sesame"]
+
+[install]
+by = "brew"
+formula = "sunfmin/tap/sesame"
