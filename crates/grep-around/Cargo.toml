@@ -1,6 +1,6 @@
 [package]
 name = "grep-around"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 description = "Searches paths recursively (honouring .gitignore, skipping target/ and binary files) and prints each match's region with line numbers, overlapping regions merged, per file under a header; or prints one file's line range with line numbers."
