@@ -1,6 +1,6 @@
 [package]
 name = "subst"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 description = "Applies one or more regex substitutions (capture groups in the replacement, an optional required match count) to several files in one call, checking every one before writing any file, and prints per file each changed region numbered."

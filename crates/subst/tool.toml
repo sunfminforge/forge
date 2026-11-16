@@ -1,5 +1,5 @@
 name = "subst"
-version = "0.1.0"
+version = "0.1.1"
 purpose = "Applies one or more regex substitutions to several files in one call, instead of sed -i 's/…/…/g' per file or a python3 heredoc splicing out the text between s.index(A) and s.index(B): each substitution is a regex (Rust regex syntax; (?s)A.*?B spans lines, so it splices between two anchors) and its replacement ($1, ${name} capture groups), with an optional -n <count> it must match exactly. Every substitution is checked against every file before any is written: one that matches nothing in a file, or not its count, writes no file at all and exits 1, naming the substitution, the file, its match count and the fix. On success it writes each changed file once (tempfiles renamed over their paths; a failure puts back what was done) and prints per file ('== <file>') each changed region with line numbers ('<line>: <text>'), so no grep follows. --dry-run prints the same and writes nothing. Exits 2 on a bad regex, a replacement naming a missing group, or an unreadable file. Exact-text edits are apply-edits' and apply-patch's."
 usage = "subst [--dry-run] <regex> <replacement> [-n <count>] <file>... | subst [--dry-run] -e <regex> <replacement> [-n <count>] [-e ...]... <file>..."
-roles = ["rust-cli-coder", "trainer"]
+roles = ["rust-cli-coder", "rust-web-coder", "trainer"]

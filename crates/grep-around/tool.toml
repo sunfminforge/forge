@@ -1,5 +1,5 @@
 name = "grep-around"
-version = "0.1.0"
+version = "0.1.1"
 purpose = "Finds a pattern and reads around it in one call: searches the paths recursively (honouring .gitignore, skipping target/ and binary files) and prints per file a '== <file>' header, then each match's region with line numbers ('<line>: <text>', the matching line marked with '>'), overlapping regions merged, 10 lines of context by default; or prints one file's <from>-<to> line range with line numbers. Exits 0 with matches, 1 with none, 2 on a bad pattern, path or range."
 usage = "grep-around <pattern> [path…] [--glob <g>]... [--context N] [--fixed] | grep-around <file>:<from>-<to>"
-roles = ["foreman", "rust-cli-coder", "rust-web-coder", "trainer", "warden"]
+roles = ["foreman", "rust-cli-coder", "rust-web-coder", "trainer", "warden", "flow-keeper", "ui-tester"]

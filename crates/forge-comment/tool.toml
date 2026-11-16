@@ -1,5 +1,5 @@
 name = "forge-comment"
-version = "0.1.0"
+version = "0.1.1"
 purpose = "Says something on a Guild issue in one call instead of curl to the Forgejo API: posts a comment on <owner/repo>#<n> with the instance's own account (GUILD_FORGEJO_URL, GUILD_FORGEJO_TOKEN), or edits a comment that account wrote, and prints the comment's id and URL; --dry-run prints the request and sends nothing."
 usage = "forge-comment say <owner/repo>#<n> --text <t> | --body-file <f> [--dry-run] | forge-comment correct <owner/repo> <comment-id> --text <t> | --body-file <f> [--dry-run]"
-roles = ["foreman"]
+roles = ["foreman", "trainer", "warden", "steward"]
