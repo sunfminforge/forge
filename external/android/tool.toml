@@ -1,0 +1,17 @@
+# An external tool: installed by its recipe on the machine that runs the work, when
+# the work needs it (sunfmin/control#1066). The Android toolchain: a JDK 21, the
+# Android SDK's command-line tools, then sdkmanager's packages, in
+# ~/Library/Android/guild, about 6 GB, on the machine whose work names one of its
+# programs (sunfmin/control#1167).
+name = "android"
+version = "1.0.0"
+purpose = "The Android toolchain: JDK 21, the Android SDK, its emulator and an arm64 system image"
+usage = "android gives adb, emulator, sdkmanager, avdmanager and java on the PATH"
+roles = ["mobile-app-coder"]
+gives = ["emulator", "adb", "avdmanager", "java", "sdkmanager"]
+
+[install]
+by = "android"
+packages = ["platform-tools", "emulator", "platforms;android-37.0", "build-tools;36.0.0", "system-images;android-36;google_apis;arm64-v8a"]
+jdk = { url = "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.13_9.tar.gz", sha256 = "bf036b35b071bfb2f54f2c0af8ee8d88afa95ee6eb3dce02c0f94cfc2524d04a" }
+sdk = { url = "https://dl.google.com/android/repository/commandlinetools-mac-15641748_latest.zip", sha256 = "a2253766e128f6d4ff594d23857b67f52028a7e8773b2634dcc3d3e60d13b290" }
