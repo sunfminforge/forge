@@ -1,0 +1,13 @@
+# An external tool: installed by its recipe on the machine that runs the work, when
+# the work needs it (sunfmin/control#1066).
+name = "rustup"
+version = "1.0.0"
+purpose = "Rust's toolchain, stable and minimal, with clippy and rustfmt"
+usage = "rustup <command> [args…]"
+roles = ["coder"]
+gives = ["rustup", "rustc", "cargo-clippy", "rustfmt"]
+
+[install]
+by = "rustup"
+url = "https://static.rust-lang.org/rustup/archive/1.29.3/aarch64-apple-darwin/rustup-init"
+sha256 = "63752a1919a3a4793173ec70f8f212621a7ce38ba6a246095984482f4de20f9f"
