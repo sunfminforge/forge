@@ -1,0 +1,5 @@
+name = "l3-query"
+version = "0.1.0"
+purpose = "Reads ~/.guild/l3.sqlite in one call, read-only, instead of tries of sqlite3: 'tables' prints one line per table, '<table>: <column> <TYPE>, …'; 'sql \"<SELECT>\"' runs one SELECT or WITH statement and prints a header line of its column names then one line per row, tab-separated (NULL as NULL, a tab, newline or backslash in a value escaped \\t, \\n, \\\\), or '(no rows)'. Any statement that writes, more than one statement, or one not starting SELECT or WITH (INSERT, UPDATE, DELETE, DROP, CREATE, ATTACH, PRAGMA…) is refused with exit 1 and its reason, writing nothing; the store is opened read-only with query_only on. --db <path> reads another store. Exits 2 on a usage error or a store it cannot open."
+usage = "l3-query [--db <path>] tables | l3-query [--db <path>] sql \"<SELECT>\""
+roles = ["foreman", "warden"]
