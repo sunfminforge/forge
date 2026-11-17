@@ -10,7 +10,7 @@ the new text
 >>>>>>> REPLACE
 ```
 
-Each search text is matched byte for byte and must match exactly once, unless its block opens with `<<<<<<< SEARCH all`, which replaces every match. Blocks apply in order, and an empty REPLACE deletes the text. When any block matches zero or several times, nothing is written: stderr names each such block, its match count, where its matches (or a line like its first) are, and the fix, and it exits 1. On success the file is written once (a temp file persisted over it) and stdout shows, per block, the changed region with line numbers (`<line>: <text>`), so you need no grep afterwards. A malformed block or an unreadable file exits 2. `--dry-run` prints the same regions and writes nothing. To read the regions before editing, use read-files or peek.
+Each search text is matched byte for byte and must match exactly once, unless its block opens with `<<<<<<< SEARCH all`, which replaces every match. Blocks apply in order, and an empty REPLACE deletes the text. When any block matches zero or several times, nothing is written: stderr names each such block, its match count, where its matches (or a line like its first) are, and the fix, and it exits 1. On success the file is written once (a temp file persisted over it) and stdout shows, per block, the changed region with line numbers (`<line>: <text>`), so you need no grep afterwards. A malformed block or an unreadable file exits 2. `--dry-run` prints the same regions and writes nothing. To read the regions before editing, use `peek <file>` or `peek <file>:<from>-<to>`.
 
 ```
 apply-edits <file> [--dry-run] < blocks

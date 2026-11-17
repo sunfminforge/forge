@@ -1,8 +1,0 @@
-[package]
-name = "read-files"
-version = "0.1.0"
-edition = "2021"
-publish = false
-description = "Prints each named file, or only a line range of it, under a '==> <path>[:<start>-<end>] <==' header, each line with its line number, in one call instead of cat, cat and sed -n."
-
-[dependencies]

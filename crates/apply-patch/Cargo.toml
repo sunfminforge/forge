@@ -1,6 +1,6 @@
 [package]
 name = "apply-patch"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 description = "Applies one patch read on stdin that adds, updates (apply-edits' SEARCH/REPLACE blocks) and deletes several files, every change or none, and prints per file what it did and each changed region numbered."

@@ -21,7 +21,7 @@ It calls the guild CLI and reimplements none of it. Tests run the binary against
 Before building (guild ADR 0013), these were looked at; none was adopted:
 
 - **The guild CLI itself** (`guild` usage, `guild task …`): `guild task check`, `guild lesson` and `guild task used` are three separate commands, and no subcommand runs them together; `guild lesson` alone refuses an empty lesson but takes any number of lines. hand-in calls these three as they are, rather than adding to guild, which is out of this task's scope.
-- **forge's own tools** (apply-edits, apply-patch, cargo-failures, forge-comment, forge-pull, forge-read, grep-around, peek, read-files, repo-glance, subst, test-filters and the rest of `crates/`): none runs guild's task, lesson or used commands; forge-pull and forge-read talk to Forgejo, not to guild.
+- **forge's own tools** (apply-edits, apply-patch, cargo-failures, forge-comment, forge-pull, forge-read, grep-around, peek, repo-glance, subst, test-filters and the rest of `crates/`): none runs guild's task, lesson or used commands; forge-pull and forge-read talk to Forgejo, not to guild.
 - **just** (https://github.com/casey/just) and **go-task** (https://github.com/go-task/task): generic command runners. A recipe could chain the three calls, but each is a new install on every machine, a recipe stops at the first failing command (or, set to go on, does not say per part what took), and neither checks a lesson's line count before sending; the recipe would be as long as the hand sequence it replaces.
 - **make** (GNU make, already on the machines): the same as just, with `-k` to go on after a failure, and the same missing per-part report and lesson check.
 

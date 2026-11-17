@@ -1,5 +1,5 @@
 //! What peek does to the world: reads its arguments, stats each path,
-//! reads a file or lists a directory read-only, and prints what lib
+//! reads a file, a range of its lines or lists a directory read-only, and prints what lib
 //! decides. It never writes a file.
 
 use std::fs;
@@ -7,7 +7,8 @@ use std::io::{self, Write};
 use std::process::ExitCode;
 
 use crate::{
-    dir_body, error_line, file_body, header, help, parse, Asked, Entry, EXIT_FAILED, NAME, USAGE,
+    dir_body, error_line, file_body, header, help, parse, range_body, range_on_dir, ranged, Asked,
+    Entry, Range, Ranged, EXIT_FAILED, NAME, USAGE,
 };
 
 /// A directory's entries, each marked a directory when it is one or
@@ -43,7 +44,39 @@ fn body(path: &str) -> (Vec<u8>, bool) {
     }
 }
 
-/// Prints every path in order; whether every one was read.
+/// What lines `range` of `path` print after the header, and whether
+/// every line asked was there.
+fn lines(path: &str, range: Range) -> (Vec<u8>, bool) {
+    let read = fs::metadata(path).and_then(|m| {
+        if m.is_dir() {
+            Ok((range_on_dir(path).into_bytes(), false))
+        } else {
+            fs::read(path).map(|b| range_body(path, &b, range))
+        }
+    });
+    read.unwrap_or_else(|e| {
+        (
+            error_line(path, e.kind(), &e.to_string()).into_bytes(),
+            false,
+        )
+    })
+}
+
+/// What one argument prints after its header, and whether it was read
+/// whole: an argument that exists as written is that path, else one
+/// ending in `:<from>-<to>` is a range of a file.
+fn argument(arg: &str) -> (Vec<u8>, bool) {
+    if fs::symlink_metadata(arg).is_ok() {
+        return body(arg);
+    }
+    match ranged(arg) {
+        None => body(arg),
+        Some(Ranged::Lines { path, range }) => lines(&path, range),
+        Some(Ranged::Refused(e)) => (e.into_bytes(), false),
+    }
+}
+
+/// Prints every argument in order; whether every one was read whole.
 fn peek_all(paths: &[String]) -> io::Result<bool> {
     let stdout = io::stdout();
     let mut out = io::BufWriter::new(stdout.lock());
@@ -53,7 +86,7 @@ fn peek_all(paths: &[String]) -> io::Result<bool> {
             out.write_all(b"\n")?;
         }
         out.write_all(header(path).as_bytes())?;
-        let (b, read) = body(path);
+        let (b, read) = argument(path);
         ok &= read;
         out.write_all(&b)?;
     }

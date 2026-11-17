@@ -27,7 +27,7 @@ const HELP: &str = concat!(
     "  status:          then git status --short, one line per changed or untracked file, paths relative to the current directory; 'status: clean' when there is none.\n",
     "  last {COMMITS} commits:  then one line per commit, newest first, '<short hash> <subject>'; 'last commits: none yet' before the first commit.\n",
     "Outside a git repo the section is one line 'not a git repository: <directory>; to see git state, run repo-glance from inside a worktree', and the paths are still printed. When git itself fails the section is an 'error: ' line with its fix.\n\n",
-    "Then each named path, in the order named, as peek prints it, after a blank line: a '== <path>' header, then a file's lines as '<line>: <text>', '(binary, N bytes)' or '(empty, 0 bytes)'; a directory's entries one per line, sorted, each directory with a trailing '/'; a missing or unreadable path one 'error: <what failed>; <the fix>' line, the others still printed. Line ranges are grep-around's (<file>:<from>-<to>), not repo-glance's.\n\n",
+    "Then each named path, in the order named, as peek prints it, after a blank line: a '== <path>' header, then a file's lines as '<line>: <text>', '(binary, N bytes)' or '(empty, 0 bytes)'; a directory's entries one per line, sorted, each directory with a trailing '/'; a missing or unreadable path one 'error: <what failed>; <the fix>' line, the others still printed. Line ranges are peek's (peek <file>:<from>-<to>), not repo-glance's.\n\n",
     "options:\n",
     "  --              end of repo-glance's options: what follows is paths, even when one starts with -\n",
     "  -h, --help      print this help\n",

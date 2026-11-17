@@ -272,5 +272,5 @@ fn usage_help_and_version() {
     assert!(out(&o).contains("Exits 2 when git"));
 
     let o = glance(&d, &["--version"]);
-    assert_eq!(out(&o), "repo-glance 0.1.0\n");
+    assert_eq!(out(&o), "repo-glance 0.1.1\n");
 }

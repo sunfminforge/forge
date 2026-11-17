@@ -163,17 +163,133 @@ fn a_missing_path_prints_an_error_under_its_header_the_others_print_exit_2() {
     assert_eq!(err(&o), "");
 }
 
+/// A dir holding ten.txt, lines 'l1' to 'l10'.
+fn ten(name: &str) -> PathBuf {
+    let d = tree(name);
+    let ten: String = (1..=10).map(|i| format!("l{i}\n")).collect();
+    fs::write(d.join("ten.txt"), ten).unwrap();
+    d
+}
+
 #[test]
-fn a_line_range_is_a_path_and_its_error_names_grep_around() {
-    let d = tree("range");
-    let o = peek(&d, &["krate/Cargo.toml:1-2"]);
-    assert_eq!(o.status.code(), Some(2));
-    let s = out(&o);
-    assert!(s.starts_with("== krate/Cargo.toml:1-2\nerror: "), "{s}");
-    assert!(
-        s.contains("grep-around krate/Cargo.toml:1-2"),
-        "the fix is the grep-around line: {s}"
+fn a_range_prints_only_those_lines_with_their_real_numbers() {
+    let d = ten("range");
+    let o = peek(&d, &["ten.txt:3-5", "ten.txt:10-10"]);
+    assert_eq!(o.status.code(), Some(0));
+    assert_eq!(
+        out(&o),
+        "== ten.txt:3-5\n3: l3\n4: l4\n5: l5\n\n== ten.txt:10-10\n10: l10\n"
     );
+    assert_eq!(err(&o), "");
+}
+
+#[test]
+fn a_range_past_the_end_prints_the_lines_there_then_the_range_to_ask_exit_2() {
+    let d = ten("range-past");
+    let o = peek(&d, &["ten.txt:9-14", "krate/README.md"]);
+    assert_eq!(o.status.code(), Some(2));
+    assert_eq!(
+        out(&o),
+        "== ten.txt:9-14\n9: l9\n10: l10\n\
+         error: lines 11-14 are past the end, ten.txt has 10 lines; ask peek ten.txt:9-10\n\
+         \n== krate/README.md\n1: # k\n"
+    );
+}
+
+#[test]
+fn each_bad_range_prints_only_its_error_and_fix_exit_2() {
+    let d = ten("range-bad");
+    for (arg, want) in [
+        (
+            "ten.txt:11-12",
+            "error: range 11-12 starts past the end, ten.txt has 10 lines; ask peek ten.txt:1-10, or peek ten.txt whole\n",
+        ),
+        (
+            "ten.txt:0-3",
+            "error: lines count from 1, not 0; ask peek ten.txt:1-3\n",
+        ),
+        (
+            "ten.txt:5-2",
+            "error: range starts at 5, after its end 2; ask peek ten.txt:2-5\n",
+        ),
+        (
+            "krate/.hidden:1-1",
+            "error: range 1-1 starts past the end, krate/.hidden is empty; there is no line to ask; peek krate/.hidden shows it\n",
+        ),
+    ] {
+        let o = peek(&d, &[arg, "ten.txt:1-1"]);
+        assert_eq!(o.status.code(), Some(2), "{arg}");
+        assert_eq!(
+            out(&o),
+            format!("== {arg}\n{want}\n== ten.txt:1-1\n1: l1\n"),
+            "{arg}"
+        );
+    }
+    let o = peek(&d, &["nope.txt:1-2"]);
+    assert_eq!(o.status.code(), Some(2));
+    assert!(
+        out(&o).starts_with(
+            "== nope.txt:1-2\nerror: no such file or directory; check the name with peek ."
+        ),
+        "{}",
+        out(&o)
+    );
+}
+
+#[test]
+fn a_range_on_a_directory_prints_its_error_and_fix_exit_2() {
+    let d = ten("range-dir");
+    let o = peek(&d, &["krate:1-3"]);
+    assert_eq!(o.status.code(), Some(2));
+    assert_eq!(
+        out(&o),
+        "== krate:1-3\nerror: krate is a directory, and a line range is a file's; ask peek krate for its entries\n"
+    );
+}
+
+#[test]
+fn a_binary_file_with_a_range_prints_its_size() {
+    let d = scratch("range-binary");
+    fs::write(d.join("blob.bin"), [b'a', 0, b'\n', b'b']).unwrap();
+    let o = peek(&d, &["blob.bin:1-1"]);
+    assert_eq!(o.status.code(), Some(0));
+    assert_eq!(out(&o), "== blob.bin:1-1\n(binary, 4 bytes)\n");
+}
+
+#[test]
+fn a_file_named_like_a_range_is_read_as_that_file() {
+    let d = ten("range-named");
+    fs::write(d.join("x.txt:1-2"), "named\n").unwrap();
+    fs::write(d.join("x.txt"), "a\nb\nc\n").unwrap();
+    let o = peek(&d, &["x.txt:1-2", "x.txt:2-3"]);
+    assert_eq!(o.status.code(), Some(0));
+    assert_eq!(
+        out(&o),
+        "== x.txt:1-2\n1: named\n\n== x.txt:2-3\n2: b\n3: c\n"
+    );
+}
+
+#[test]
+fn files_ranges_and_a_directory_mixed_in_one_call_range() {
+    let d = ten("range-mixed");
+    let o = peek(
+        &d,
+        &[
+            "krate/Cargo.toml",
+            "ten.txt:2-3",
+            "krate/src",
+            "krate/Cargo.toml:2-2",
+        ],
+    );
+    assert_eq!(o.status.code(), Some(0));
+    assert_eq!(
+        out(&o),
+        "== krate/Cargo.toml\n1: [package]\n2: name = \"k\"\n\
+         \n== ten.txt:2-3\n2: l2\n3: l3\n\
+         \n== krate/src\nlib.rs\n\
+         \n== krate/Cargo.toml:2-2\n2: name = \"k\"\n"
+    );
+    assert_eq!(err(&o), "");
 }
 
 #[cfg(unix)]
@@ -228,17 +344,18 @@ fn help_names_what_it_prints_and_its_exit_codes_version_its_number() {
     assert_eq!(o.status.code(), Some(0));
     let h = out(&o);
     for needle in [
-        "usage: peek <path>…",
-        "== <path>",
+        "usage: peek <path>[:<from>-<to>]…",
+        "== <argument>",
+        "src/lib.rs:10-20",
         "(binary, N bytes)",
         "trailing '/'",
-        "grep-around <file>:<from>-<to>",
-        "Exits 0 when every path was read",
-        "Exits 2 when any path",
+        "<path>:<from>-<to>",
+        "Exits 0 when every argument was read",
+        "Exits 2 when any argument failed",
     ] {
         assert!(h.contains(needle), "help lacks {needle:?}:\n{h}");
     }
     let o = peek(&d, &["--version"]);
     assert_eq!(o.status.code(), Some(0));
-    assert_eq!(out(&o), "peek 0.1.0\n");
+    assert_eq!(out(&o), format!("peek {}\n", env!("CARGO_PKG_VERSION")));
 }
