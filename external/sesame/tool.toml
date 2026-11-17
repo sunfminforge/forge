@@ -2,7 +2,7 @@
 # the work needs it (sunfmin/control#1066). sesame reaches a service with no good CLI
 # (sunfmin/control#1185).
 name = "sesame"
-version = "1.1.0"
+version = "1.1.1"
 purpose = "Signs in to SaaS APIs with no CLI of their own and calls their REST APIs"
 usage = "sesame api <service> <path>"
 roles = ["coder"]
