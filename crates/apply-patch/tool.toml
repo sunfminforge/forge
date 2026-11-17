@@ -1,5 +1,5 @@
 name = "apply-patch"
-version = "0.1.0"
+version = "0.1.1"
 purpose = "Applies one change set to several files in one call, instead of python3 str.replace heredocs and cat > f <<EOF steps: reads on stdin one patch ('*** Begin Patch' line, then per file '*** Add File: <path>' with each new line written '+' and its text, '*** Update File: <path>' with apply-edits' SEARCH/REPLACE blocks, or '*** Delete File: <path>', then '*** End Patch' line) and checks every change before writing any: an add over an existing file, an update or delete of a missing file, or a block matching zero or several times writes no file at all and exits 1, naming each failing change by its file and patch line with the fix. On success it writes every file (tempfiles renamed over their paths; a failure puts back what was done) and prints per file what it did ('== add|update|delete <path>') and each changed region with line numbers ('<line>: <text>'). Exits 2 on a malformed patch. --dry-run prints the same and writes nothing. One file's edits alone are apply-edits'."
 usage = "apply-patch [--dry-run] < patch"
 roles = ["rust-cli-coder", "rust-web-coder", "trainer"]

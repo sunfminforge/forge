@@ -1,8 +1,8 @@
 [package]
 name = "peek"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 publish = false
-description = "Prints each named path under a '== <path>' header: a file's lines numbered, a directory's entries one per line with '/' after each directory, in the order named, in one call instead of cat, ls and cat."
+description = "Prints each named argument under a '== <argument>' header: a file's lines numbered, only lines <from> to <to> of <path>:<from>-<to>, a directory's entries one per line with '/' after each directory, in the order named, in one call instead of cat, sed and ls."
 
 [dependencies]

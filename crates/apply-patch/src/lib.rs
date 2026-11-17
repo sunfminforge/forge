@@ -59,7 +59,7 @@ const HELP: &str = concat!(
     "  '== add <path>: <n> line(s)', then every line of the new file as '<line>: <text>'\n",
     "  '== update <path>: <k> block(s)', then per block apply-edits' region: '== block <n>: <m> match(es), line(s) <where>' and the changed lines as '<line>: <text>'\n",
     "  '== delete <path>: <n> line(s) removed'\n\n",
-    "Reading files first is read-files' (<path>:<start>-<end>) and peek's; one file's edits alone are apply-edits'.\n\n",
+    "Reading files first is peek's (peek <file>, or peek <file>:<from>-<to> for a range); one file's edits alone are apply-edits'.\n\n",
     "options:\n",
     "  --dry-run       check every change and print what it would do, but write nothing\n",
     "  -h, --help      print this help\n",

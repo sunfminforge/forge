@@ -41,7 +41,7 @@ const HELP: &str = concat!(
     "  every or none  when any block matches zero or several times, nothing is written: the file stays byte for byte as it was.\n",
     "  marker lines   are exactly as shown, alone on their line; blank lines may sit between blocks, any other text outside a block is refused. A search text cannot hold a line that is exactly '=======', nor a replace text one that is exactly '>>>>>>> REPLACE'.\n\n",
     "What it prints, on success, to stdout: per block a header '== block <n>: <m> match(es), line(s) <where>', then the changed region of the file as now written, each line as '<line>: <text>', separate matches of one block parted by '--'. A deletion prints the lines either side of where the text was, under 'deleted, joined at line <l>'. The file is written once, after every block applied; when nothing changed it is not written.\n\n",
-    "Reading the regions first is read-files' (<path>:<start>-<end>) and peek's, not apply-edits'.\n\n",
+    "Reading the regions first is peek's (peek <file>, or peek <file>:<from>-<to> for a range), not apply-edits'.\n\n",
     "options:\n",
     "  --dry-run       apply in memory and print the regions as they would be, but write nothing\n",
     "  --              end of options: what follows is the file, even when it starts with -\n",
@@ -390,11 +390,11 @@ pub fn fault_line(file: &str, f: &Fault) -> String {
     };
     if f.count == 0 {
         let mut fix = if f.near.is_empty() {
-            format!("its first line is nowhere in {file}; read the region with read-files {file} or peek {file} and copy the old text exactly")
+            format!("its first line is nowhere in {file}; read the region with peek {file} and copy the old text exactly")
         } else {
             let l = f.near[0];
             format!(
-                "a line like its first is at line {}; read read-files {file}:{}-{} and copy the old text byte for byte, indentation and blank lines included",
+                "a line like its first is at line {}; read peek {file}:{}-{} and copy the old text byte for byte, indentation and blank lines included",
                 lines(&f.near),
                 l,
                 l + 10
@@ -626,7 +626,7 @@ mod tests {
         assert_eq!((f[1].n, f[1].count, f[1].near.clone()), (2, 0, vec![2]));
         assert!(fault_line("f", &f[0]).contains("2 matches in f, at lines 1, 3"));
         assert!(fault_line("f", &f[1]).contains("not found, 0 matches"));
-        assert!(fault_line("f", &f[1]).contains("read-files f:2-12"));
+        assert!(fault_line("f", &f[1]).contains("peek f:2-12"));
     }
 
     #[test]

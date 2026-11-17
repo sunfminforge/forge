@@ -206,7 +206,7 @@ fn all_or_none_a_search_matching_nowhere_writes_nothing() {
             "1 of 3 changes cannot be made",
             "update other.txt (patch line 10): 1 of 1 block did not match exactly once",
             "block 1 ('zzz'): not found, 0 matches in other.txt",
-            "read-files other.txt",
+            "peek other.txt",
         ],
     );
 }
