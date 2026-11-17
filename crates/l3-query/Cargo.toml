@@ -1,6 +1,6 @@
 [package]
 name = "l3-query"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 description = "Reads Guild's L3 store read-only in one call: every table with its columns, or one SELECT's rows as plain text under a header line, refusing any statement that writes."
