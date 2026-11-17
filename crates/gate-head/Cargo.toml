@@ -1,0 +1,30 @@
+[package]
+name = "gate-head"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Runs guild gate once in a worktree and says whether it was green on exactly HEAD's tree with the worktree clean: the gate's whole output, then a summary of the head commit, its tree, the tree the gate names, and whether they match."
+
+[dependencies]
+# The revision of agent-help that skills/agent-cli adopts.
+agent-help = { git = "https://github.com/sunfmin/agent-cli.git", rev = "f506df826a97b2fd834e1d65b9057001a6a6e796" }
+clap = { version = "4.5", features = ["derive"] }
+# The Flux commit that Homebrew's sunfmin/tap/flux-toolchain was built from,
+# as pr-get takes it: `brew info sunfmin/tap/flux-toolchain` names it.
+flux-rs = { git = "https://github.com/flux-rs/flux.git", rev = "ef6af17f647cf98c860e18e90c36d1f1b69849ff" }
+
+[dev-dependencies]
+proptest = "1"
+
+# The guild the tests run in place of the real one: target/<profile>/examples/guild.
+[[example]]
+name = "guild"
+path = "tests/fake/guild.rs"
+
+# ./verify.sh checks the pure module, decide, with Flux.
+[package.metadata.flux]
+enabled = true
+check-overflow = "strict"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(flux)'] }

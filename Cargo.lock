@@ -509,6 +509,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "gate-head"
+version = "0.1.0"
+dependencies = [
+ "agent-help",
+ "clap",
+ "flux-rs",
+ "proptest",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
